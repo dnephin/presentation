@@ -6,7 +6,7 @@ read -p "Presentation name: " pres_name
 git fetch origin
 git checkout -b "$pres_name" origin/master
 
-cat "$pres_name" > presentation_name
+echo "$pres_name" > presentation_name
 sed -i -e "s/\$PRES_NAME/$pres_name/" index.html
 
 git commit -a -m "Creating $pres_name"
