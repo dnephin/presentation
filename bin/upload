@@ -1,0 +1,15 @@
+#!/bin/bash
+
+git submodule update --init
+
+remote_path=$(cat remote_path)
+pres_name=$(cat presentation_name)
+
+rsync -a \
+    --exclude examples \
+    --exclude .\* \
+    --exclude reveal.js/css/reveal.css \
+    --exclude reveal.js/js/reveal.js \
+    --exclude README.md \
+    reveal.js index.html \
+    $remote_path$pres_name
