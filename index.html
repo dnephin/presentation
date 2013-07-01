@@ -39,8 +39,20 @@
     font-family: 'Droid Sans Mono', monospace;
 }
 
+.reveal blockquote {
+    line-height: 1.8em;
+    padding: 30px;
+}
+
+.reveal blockquote b {
+    color: #e7ad52;
+}
+
 .reveal pre code {
-    padding-left: 50px;
+    padding-left: 1.2em;
+    font-size: 1.5em;
+    line-height: 1.2em;
+    max-height: 450px;
 }
 
         </style>
@@ -58,29 +70,31 @@
 
                 <section>
                     <blockquote cite="http://docs.python.org/3.1/library/itertools.html">
-                    [itertools] standardizes a core set of fast, memory efficient tools that are useful by themselves or in combination. Together, they form an &ldquo;iterator algebra&rdquo; making it possible to construct specialized tools succinctly and efficiently in pure Python.
+                    ... standardizes a core set of <b>fast</b>, <b>memory efficient</b> tools that are useful by themselves or in combination. Together, they form an &ldquo;iterator algebra&rdquo; making it possible to construct specialized tools <b>succinctly and efficiently</b> in pure Python.
                     </blockquote>
 
                 </section>
 
                 <section>
-                    <h2>ISLICE</h2>
-                    <pre><code class="python">
-import itertools
-
-# range(200)[5:10]
-itertools.islice(range(200), 5, 10)) 
-# [5, 6, 7, 8, 9]
+                    <h2>Slicing</h2>
+            <pre><code class="python">
+>>> seq = range(200)
+>>> itertools.islice(seq, 5, 10)) 
+&lt;itertools.islice object at 0x2a25788&gt;
 
 
 def view(seq, stop=10):
     return list(itertools.islice(seq, stop))
-                    </pre></code>
+
+
+>>> view(itertools.islice(seq, 5, 10))
+[5, 6, 7, 8, 9]
+            </pre></code>
                 </section>
 
 
                 <section>
-                    <h2>Infinite Iterators</h2>
+                    <h2>Infinite</h2>
                     <pre><code class="python">
 >>> itertools.count(start=3, step=2)
 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, ...
@@ -94,10 +108,10 @@ def view(seq, stop=10):
                 </section>
 
                 <section>
-                    <h2>Filtering Iterators</h2>
+                    <h2>Filtering</h2>
                     <pre><code class="python">
 >>> eq_to_six = functools.partial(operator.eq, 6)
->>> filter(eq_to_six, range(200))  # itertools.ifilter in 2.x
+>>> filter(eq_to_six, range(200))
 6
 
 >>> itertools.filterfalse(eq_to_six, range(200))
@@ -113,14 +127,8 @@ def view(seq, stop=10):
                 </section>
 
                 <section>
-                    <h2>Combining and Splitting Iterators</h2>
+                    <h2>Splitting</h2>
                     <pre><code class="python">
->>> itertools.chain(['a', 'b', 'c'], [1, 2, 3])
-'a', 'b', 'c', 1, 2, 3 
-
->>> itertools.zip_longest(range(3), string.ascii_lowercase)
-(0, 'a'), (1, 'b'), (2, 'c'), (None, 'd'), (None, 'e'), ...
-
 >>> keyfunc = lambda v: v // 3
 >>> itertools.groupby(range(10), key=keyfunc)
 (0, [1, 2]), (1, [3, 4, 5]), (2, [6, 7, 8]), ...
@@ -130,17 +138,29 @@ def view(seq, stop=10):
                     </pre></code>
                 </section>
 
+
+                <section>
+                    <h2>Combining</h2>
+                    <pre><code class="python">
+>>> itertools.chain(['a', 'b', 'c'], [1, 2, 3])
+'a', 'b', 'c', 1, 2, 3 
+
+>>> itertools.zip_longest(range(3), ascii_lowercase)
+(0, 'a'), (1, 'b'), (2, 'c'), (None, 'd'), ...
+                    </pre></code>
+                </section>
+
                 <section>
                     <h2>Combinatoric Generators</h2>
                     <pre><code class="python">
 >>> itertools.product('ABCD', 'xy')
-('A', 'x'), ('A', 'y'), ('B', 'x'), ('B', 'y'), ('C', 'x'), ...
+('A', 'x'), ('A', 'y'), ('B', 'x'), ('B', 'y'), ...
 
 >>> itertools.combinations('abc', 2)
 ('a', 'b'), ('a', 'c'), ('b', 'c')
 
 >>> itertools.permutations('abc')
-('a', 'b', 'c'), ('a', 'c', 'b'), ('b', 'a', 'c'), ...
+('a', 'b', 'c'), ('a', 'c', 'b'), ('b', 'a', 'c'),...
                     </pre></code>
                 </section>
 
@@ -155,7 +175,8 @@ def view(seq, stop=10):
 import itertools, operator
 
 period = 200
-cycles = map(operator.not_, itertools.cycle(range(period)))
+cycles = map(operator.not_,
+             itertools.cycle(range(period)))
 
 # iterate forever
 for cycle_is_complete in cycles:
@@ -189,12 +210,12 @@ itertools.chain.from_iterable(nested_lists)
                     <pre><code class="python">
 import itertools, string
 
-def grouper(n, iterable, fillvalue=None):
+def grouper(n, iterable, fill=None):
     seq = itertools.repeat(iter(iterable), n)
-    return itertools.zip_longest(*seq, fillvalue=fillvalue)
+    return itertools.zip_longest(*seq, fillvalue=fill)
 
 grouper(3, string.ascii_lowercase)
-('a', 'b', 'c'), ('d', 'e', 'f'), ('g', 'h', 'i'), ...
+('a', 'b', 'c'), ('d', 'e', 'f'), ('g', 'h', 'i'),...
                     </pre></code>
                 </section>
 
@@ -232,7 +253,7 @@ dot_product([1, 4, 5], [6, 2, 3])
 				center:         true,
                 rollingLinks:   false,
 				transition:     'zoom', // default/cube/page/concave/zoom/linear/fade/none
-				theme:          'moon',
+				theme:          'night',
 
 				dependencies: [
 					{ src: 'reveal.js/lib/js/classList.js',
