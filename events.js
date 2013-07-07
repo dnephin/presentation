@@ -14,14 +14,14 @@ Reveal.addEventListener('shock', function() {
         }
     }
 
-    toggles = make_toggle(500, 
-              make_toggle(100,
-              make_toggle(100,
-              make_toggle(100,
-              make_toggle(100,
-              make_toggle(100,
+    toggles = make_toggle(70, 
+              make_toggle(120,
+              make_toggle(80,
+              make_toggle(120,
+              make_toggle(90,
+              make_toggle(120,
               make_toggle(0, no_op)))))))
 
-    setTimeout(toggles, 1200)
+    setTimeout(toggles, 1000)
 
 })
