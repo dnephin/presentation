@@ -2,9 +2,10 @@
 
 Reveal.addEventListener('shock', function() {
 
-    console.log('starting')
+    console.log('starting flicker')
+    var ele = $('.flicker').removeClass('active')
+
     setTimeout(function() {
-        $('.flicker').addClass('active');
-        console.log('done');
+        ele.addClass('active');
     }, 1000);
 })
