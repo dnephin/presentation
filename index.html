@@ -31,6 +31,22 @@
 		<![endif]-->
 
 		<script src="reveal.js/lib/js/head.min.js"></script>
+        <style>
+.reveal dl {
+    text-align: left;
+}
+
+.reveal dl dt {
+    font-weight bold;
+    margin-bottom: 0.2em;
+}
+
+.reveal dl dd {
+    margin-left: 2em;
+    margin-bottom: 0.5em;
+}
+
+        </style>
 	</head>
 
 	<body>
@@ -43,6 +59,7 @@
     <h1>Profiling Python</h1>
     <h2></h2>
 </section>
+
 
 <section>
     <h2>The rules of Optimization</h2>
@@ -69,6 +86,10 @@ $ python -m timeit 'import runall; runall.run()'
 
 <section>
     <h2>profile and pstats</h2>
+    <p>
+        <a href="http://docs.python.org/2/library/profile.html">
+        http://docs.python.org/library/profile.html</a>
+    </p>
     <pre><code>
 $ python -m cProfile -o runall.pstats runall.py
 $
@@ -135,11 +156,45 @@ $ gprof2dot -f pstats runall.pstats | dot -Tpdf -o output.pdf
 
 <section>
     <h2>PStats</h2>
+    <dl>
+        <dt>sort_stats</dt>
+        <dd>cumulative, time, call count, primitive all count</dd>
+
+        <dt>print_stats</dt>
+        <dd>with an optional regex filter, or limit</dd>
+
+        <dt>print_callers</dt>
+        <dd>of functions which match a regex</dd>
+
+        <dt>print_callees</dt>
+        <dd>of functions which match a regex</dd>
+
+    </dl>
 </section>
 
 <section>
     <h2>Optimize</h2>
 </section>
+
+<section>
+    <h2>Follow the numbers</h2>
+    <pre><code>
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+     1    0.001    0.001    0.200    0.200 runall.py:3(&lt;module&gt;)
+     1    0.000    0.000    0.198    0.198 runall.py:9(run)
+  11/7    0.007    0.001    0.195    0.028 solver.py:297(solve)
+  2095    0.027    0.000    0.055    0.000 solver.py:100(find_options_for)
+   513    0.005    0.000    0.050    0.000 solver.py:234(find_number_pairs_in_cube)
+   535    0.037    0.000    0.040    0.000 solver.py:88(show_options)
+  1523    0.027    0.000    0.037    0.000 solver.py:115(identify_only_possibility)    
+    </pre></code>
+</section>
+
+
+<section>
+    <h2></h2>
+</section>
+
 
 <section>
     <h2></h2>
@@ -156,11 +211,26 @@ $ gprof2dot -f pstats runall.pstats | dot -Tpdf -o output.pdf
         <li>timing accuracy</li>
         <li>threads (and processes)</li>
         <li>overhead</li>
+        <li>garbage collection</li>
     </ul>
 </section>
 
 <section>
     <h2>Sampling</h2>
+    <pre><code>
+    import contextlib, cProfile
+
+    profiler = cProfile.Profile()
+
+    @contextlib.contextmanager
+    def profile_section():
+        profiler.enable()
+        yield
+        profiler.disable()
+
+    ...
+    profiler.dump_stats(filename)
+    </code></pre>
 </section>
 
 <section>
