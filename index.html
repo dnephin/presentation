@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>python-profiling</title>
+		<title>Profiling Python</title>
 
 		<meta name="author" content="Daniel Nephin">
 
@@ -40,8 +40,62 @@
 
 
 <section>
-    <h1>Example</h1>
-    <h2>This is how it's done</h2>
+    <h1>Profiling Python</h1>
+    <h2></h2>
+</section>
+
+<section>
+    <h2>The rules of Optimization</h2>
+    <ol>
+      <li>Don't.</li>
+      <li>Don't... yet</li>
+      <li>Profile before optimizing</li>
+    </ol>
+</section>
+
+<section>
+    <h2>Have a Goal</h2>
+</section>
+
+
+<section>
+    <h2>timeit</h2>
+    <pre><code>
+$ python -m timeit 'import runall; runall.run()'
+10 loops, best of 3: 135 msec per loop
+    </code></pre>
+</section>
+
+
+<section>
+    <h2>profile and pstats</h2>
+    <pre><code>
+$ python -m cProfile -o runall.pstats runall.py
+$
+
+    </code></pre>
+</section>
+
+<section>
+    <h2>Visualization</h2>
+</section>
+
+
+<section>
+    <h2>RunSnakeRun</h2>
+</section>
+
+
+<section>
+    <h2>Call Graph</h2>
+</section>
+
+<section>
+    <h2>Optimize</h2>
+</section>
+
+<section>
+    <h2>PStats</h2>
 </section>
 
 <section>
@@ -49,6 +103,25 @@
 </section>
 
 
+<section>
+    <h2></h2>
+</section>
+
+<section>
+    <h2>Limitations</h2>
+    <ul>
+        <li>threads (and processes)</li>
+        <li>overhead</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Sampling</h2>
+</section>
+
+<section>
+    <h2></h2>
+</section>
             </div>
         </div>
 
