@@ -11,5 +11,5 @@ rsync -a \
     --exclude reveal.js/css/reveal.css \
     --exclude reveal.js/js/reveal.js \
     --exclude README.md \
-    reveal.js index.html \
+    reveal.js index.html img \
     $remote_path$pres_name

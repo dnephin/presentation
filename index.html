@@ -54,7 +54,7 @@
 </section>
 
 <section>
-    <h2>Have a Goal</h2>
+    <h2>Identify a Goal</h2>
 </section>
 
 
@@ -72,7 +72,31 @@ $ python -m timeit 'import runall; runall.run()'
     <pre><code>
 $ python -m cProfile -o runall.pstats runall.py
 $
+$ python -m pstats runall.pstats
+Welcome to the profile statistics browser.
+runall.pstats% sort cumulative
+runall.pstats% stats 10
+    </code></pre>
+</section>
 
+<section>
+    <pre><code style="max-height: none;">
+         317050 function calls (311709 primitive calls) in 0.200 seconds
+
+   Ordered by: cumulative time
+   List reduced from 172 to 10 due to restriction &lt;10&gt;
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.001    0.001    0.200    0.200 runall.py:3(&lt;module&gt;)
+        1    0.000    0.000    0.198    0.198 runall.py:9(run)
+     11/7    0.007    0.001    0.195    0.028 solver.py:297(solve)
+     2095    0.027    0.000    0.055    0.000 solver.py:100(find_options_for)
+      513    0.005    0.000    0.050    0.000 solver.py:234(find_number_pairs_in_cube)
+      535    0.037    0.000    0.040    0.000 solver.py:88(show_options)
+     1523    0.027    0.000    0.037    0.000 solver.py:115(identify_only_possibility)
+   3970/4    0.007    0.000    0.021    0.005 /usr/lib/python2.7/copy.py:145(deepcopy)
+    652/4    0.003    0.000    0.021    0.005 /usr/lib/python2.7/copy.py:306(_reconstruct)
+    328/4    0.001    0.000    0.021    0.005 /usr/lib/python2.7/copy.py:253(_deepcopy_dict)
     </code></pre>
 </section>
 
@@ -83,19 +107,38 @@ $
 
 <section>
     <h2>RunSnakeRun</h2>
+    <p>
+        <a href="http://www.vrplumber.com/programming/runsnakerun/">
+        http://www.vrplumber.com/programming/runsnakerun/</a>
+</section>
+
+<section>
+    <img src="img/runsnakerun.png" />
 </section>
 
 
 <section>
     <h2>Call Graph</h2>
+    <p>
+        <a href="http://code.google.com/p/jrfonseca/wiki/Gprof2Dot">
+        http://code.google.com/p/jrfonseca/wiki/Gprof2Dot</a>
+
+    <pre><code>
+$ gprof2dot -f pstats runall.pstats | dot -Tpdf -o output.pdf
+    </code></pre>
+</section>
+
+<section>
+    <img src="img/gprof.png" />
+</section>
+
+
+<section>
+    <h2>PStats</h2>
 </section>
 
 <section>
     <h2>Optimize</h2>
-</section>
-
-<section>
-    <h2>PStats</h2>
 </section>
 
 <section>
@@ -110,6 +153,7 @@ $
 <section>
     <h2>Limitations</h2>
     <ul>
+        <li>timing accuracy</li>
         <li>threads (and processes)</li>
         <li>overhead</li>
     </ul>
@@ -136,7 +180,7 @@ $
 				history:        true,
 				center:         true,
                 rollingLinks:   false,
-				transition:     'zoom', // default/cube/page/concave/zoom/linear/fade/none
+				transition:     'fade', // default/cube/page/concave/zoom/linear/fade/none
 				theme:          'sky',
 
 				dependencies: [
