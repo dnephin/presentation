@@ -13,6 +13,8 @@
 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Monda' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="reveal.js/css/reveal.min.css">
 		<link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
 
@@ -32,6 +34,21 @@
 
 		<script src="reveal.js/lib/js/head.min.js"></script>
         <style>
+        /* TODO: min-height for code blocks */
+.reveal {
+  font-family: 'PT Sans', sans-serif;
+}
+
+.reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+  text-transform: none;
+  font-family: 'Monda', sans-serif;
+  letter-spacing: normal;
+}
+
+.reveal code {
+  min-height: 150px;
+}
+
 .reveal dl {
     text-align: left;
 }
@@ -56,19 +73,25 @@
 
 
 <section>
-    <h1>Profiling Python</h1>
+    <h1>Profiling<br /> Python</h1>
     <h2></h2>
 </section>
 
 
 <section>
-    <h2>The rules of Optimization</h2>
+    <h2>The Rules of Optimization</h2>
     <ol>
       <li>Don't.</li>
       <li>Don't... yet</li>
       <li>Profile before optimizing</li>
     </ol>
 </section>
+
+<!--
+Make It Work Make It Right Make It Fast
+ - Kent Beck
+
+-->
 
 <section>
     <h2>Identify a Goal</h2>
@@ -77,10 +100,17 @@
 
 <section>
     <h2>timeit</h2>
-    <pre><code>
-$ python -m timeit 'import runall; runall.run()'
-10 loops, best of 3: 135 msec per loop
+    <pre><code class="bash">
+    $ python -m timeit 'import runall; runall.run()'
+    10 loops, best of 3: 135 msec per loop
     </code></pre>
+</section>
+
+<section>
+  <h2>The Tools</h2>
+  <p><b>profile</b> and <b>cProfile</b> for profiling,
+      produce <b>pstats.Stats</b></p>
+
 </section>
 
 
@@ -90,34 +120,34 @@ $ python -m timeit 'import runall; runall.run()'
         <a href="http://docs.python.org/2/library/profile.html">
         http://docs.python.org/library/profile.html</a>
     </p>
-    <pre><code>
-$ python -m cProfile -o runall.pstats runall.py
-$
-$ python -m pstats runall.pstats
-Welcome to the profile statistics browser.
-runall.pstats% sort cumulative
-runall.pstats% stats 10
+    <pre><code class="bash">
+    $ python -m cProfile -o runall.pstats runall.py
+    $
+    $ python -m pstats runall.pstats
+    Welcome to the profile statistics browser.
+    runall.pstats% sort cumulative
+    runall.pstats% stats 10
     </code></pre>
 </section>
 
 <section>
-    <pre><code style="max-height: none;">
-         317050 function calls (311709 primitive calls) in 0.200 seconds
+    <pre><code style="max-height: none;" class="python">
+  317050 function calls (311709 primitive calls) in 0.200 seconds
 
-   Ordered by: cumulative time
-   List reduced from 172 to 10 due to restriction &lt;10&gt;
+  Ordered by: cumulative time
+  List reduced from 172 to 10 due to restriction &lt;10&gt;
 
-   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-        1    0.001    0.001    0.200    0.200 runall.py:3(&lt;module&gt;)
-        1    0.000    0.000    0.198    0.198 runall.py:9(run)
-     11/7    0.007    0.001    0.195    0.028 solver.py:297(solve)
-     2095    0.027    0.000    0.055    0.000 solver.py:100(find_options_for)
-      513    0.005    0.000    0.050    0.000 solver.py:234(find_number_pairs_in_cube)
-      535    0.037    0.000    0.040    0.000 solver.py:88(show_options)
-     1523    0.027    0.000    0.037    0.000 solver.py:115(identify_only_possibility)
-   3970/4    0.007    0.000    0.021    0.005 /usr/lib/python2.7/copy.py:145(deepcopy)
-    652/4    0.003    0.000    0.021    0.005 /usr/lib/python2.7/copy.py:306(_reconstruct)
-    328/4    0.001    0.000    0.021    0.005 /usr/lib/python2.7/copy.py:253(_deepcopy_dict)
+ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+     1    0.001    0.001    0.200    0.200 runall.py:3(&lt;module&gt;)
+     1    0.000    0.000    0.198    0.198 runall.py:9(run)
+  11/7    0.007    0.001    0.195    0.028 solver.py:297(solve)
+  2095    0.027    0.000    0.055    0.000 solver.py:100(find_options_for)
+   513    0.005    0.000    0.050    0.000 solver.py:234(find_number_pairs_in_cube)
+   535    0.037    0.000    0.040    0.000 solver.py:88(show_options)
+  1523    0.027    0.000    0.037    0.000 solver.py:115(identify_only_possibility)
+3970/4    0.007    0.000    0.021    0.005 /usr/lib/python2.7/copy.py:145(deepcopy)
+ 652/4    0.003    0.000    0.021    0.005 /usr/lib/python2.7/copy.py:306(_reconstruct)
+ 328/4    0.001    0.000    0.021    0.005 /usr/lib/python2.7/copy.py:253(_deepcopy_dict)
     </code></pre>
 </section>
 
@@ -144,8 +174,9 @@ runall.pstats% stats 10
         <a href="http://code.google.com/p/jrfonseca/wiki/Gprof2Dot">
         http://code.google.com/p/jrfonseca/wiki/Gprof2Dot</a>
 
-    <pre><code>
-$ gprof2dot -f pstats runall.pstats | dot -Tpdf -o output.pdf
+    <pre><code class="bash">
+
+    $ gprof2dot -f pstats runall.pstats | dot -Tpdf -o output.pdf
     </code></pre>
 </section>
 
@@ -206,6 +237,19 @@ $ gprof2dot -f pstats runall.pstats | dot -Tpdf -o output.pdf
 </section>
 
 <section>
+    <h2></h2>
+</section>
+
+<section>
+    <h2>Common Speedups</h2>
+    <ul>
+      <li>deepcopy</li>
+      <li>loops</li>
+      <li>dynamic variable lookups</li>
+    </ul>
+</section>
+
+<section>
     <h2>Limitations</h2>
     <ul>
         <li>timing accuracy</li>
@@ -234,7 +278,29 @@ $ gprof2dot -f pstats runall.pstats | dot -Tpdf -o output.pdf
 </section>
 
 <section>
-    <h2></h2>
+    <h2>Merging</h2>
+    <pre><code class="python">
+    import pstats 
+
+    merged_stats = pstats.Stats('1.profile',
+                                '2.profile',
+                                '3.profile')
+    
+    </code></pre>
+
+</section>
+
+<section>
+  <ul>
+    <li><a href="http://docs.python.org/3/library/profile.html">
+          docs.python.org/library/profile.html</a></li>
+    <li><a href="http://www.vrplumber.com/programming/runsnakerun/">
+          RunSnakeRun</a></li>
+    <li><a href="https://code.google.com/p/jrfonseca/wiki/Gprof2Dot">
+          Gprof2Dot</a></li>
+  </ul>
+
+
 </section>
             </div>
         </div>
