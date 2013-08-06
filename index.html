@@ -189,7 +189,7 @@ ncalls  tottime  percall  cumtime  percall filename:lineno(function)
     <h2>PStats</h2>
     <dl>
         <dt>sort_stats</dt>
-        <dd>cumulative, time, call count, primitive all count</dd>
+        <dd>cumulative, time, call count, primitive call count</dd>
 
         <dt>print_stats</dt>
         <dd>with an optional regex filter, or limit</dd>
@@ -210,14 +210,14 @@ ncalls  tottime  percall  cumtime  percall filename:lineno(function)
 <section>
     <h2>Follow the numbers</h2>
     <pre><code>
-   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-     1    0.001    0.001    0.200    0.200 runall.py:3(&lt;module&gt;)
-     1    0.000    0.000    0.198    0.198 runall.py:9(run)
-  11/7    0.007    0.001    0.195    0.028 solver.py:297(solve)
-  2095    0.027    0.000    0.055    0.000 solver.py:100(find_options_for)
-   513    0.005    0.000    0.050    0.000 solver.py:234(find_number_pairs_in_cube)
-   535    0.037    0.000    0.040    0.000 solver.py:88(show_options)
-  1523    0.027    0.000    0.037    0.000 solver.py:115(identify_only_possibility)
+ncalls  tottime  cumtime    filename:lineno(function)
+     1    0.001    0.200    runall.py:3(&lt;module&gt;)
+     1    0.000    0.198    runall.py:9(run)
+  11/7    0.007    0.195    solver.py:297(solve)
+  2095    0.027    0.055    solver.py:100(find_options_for)
+   513    0.005    0.050    solver.py:234(find_number_pairs_in_cube)
+   535    0.037    0.040    solver.py:88(show_options)
+  1523    0.027    0.037    solver.py:115(identify_only_possibility)
     </pre></code>
 </section>
 
@@ -259,7 +259,7 @@ ncalls  tottime  percall  cumtime  percall filename:lineno(function)
   >>> p.print_callees('find_number_pairs_in_cube')
 
   ncalls  tottime  cumtime
-    1167    0.001    0.003  /usr/lib/python2.7/logging/__init__.py:1602(debug)
+    1167    0.001    0.003  .../logging/__init__.py:1602(debug)
      828    0.000    0.000  solver.py:33(__nonzero__)
      513    0.036    0.039  solver.py:88(show_options)
      605    0.003    0.003  solver.py:188(get_cube)
