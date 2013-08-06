@@ -217,27 +217,213 @@ ncalls  tottime  percall  cumtime  percall filename:lineno(function)
   2095    0.027    0.000    0.055    0.000 solver.py:100(find_options_for)
    513    0.005    0.000    0.050    0.000 solver.py:234(find_number_pairs_in_cube)
    535    0.037    0.000    0.040    0.000 solver.py:88(show_options)
-  1523    0.027    0.000    0.037    0.000 solver.py:115(identify_only_possibility)    
+  1523    0.027    0.000    0.037    0.000 solver.py:115(identify_only_possibility)
     </pre></code>
 </section>
 
 
 <section>
-    <h2></h2>
+  <section>
+  <h3>hmm</h3>
+<pre><code class="python">
+  >>> p.print_callees('find_options_for')
+
+      ncalls  tottime  cumtime
+       24062    0.008    0.012  solver.py:25(__eq__)
+       56565    0.007    0.007  solver.py:31(__hash__)
+        2095    0.008    0.010  solver.py:188(get_cube)
+
+</code></pre>
+  </section>
+  <section>
+    <h3>the code</h3>
+    <pre><code class="python">
+   def find_options_for(self, r, c, index):
+        other_index = self.cols if index == self.rows else self.rows
+
+        options = index[r][c].options
+        options -= set(index[r])
+        options -= set(other_index[c])
+        options -= set(self.get_cube(r, c, index))
+        return options
+
+    </code></pre>
+  </section>
+</section>
+
+<section>
+
+  <section>
+  <h3>Aha!</h3>
+<pre><code class="python">
+  >>> p.print_callees('find_number_pairs_in_cube')
+
+  ncalls  tottime  cumtime
+    1167    0.001    0.003  /usr/lib/python2.7/logging/__init__.py:1602(debug)
+     828    0.000    0.000  solver.py:33(__nonzero__)
+     513    0.036    0.039  solver.py:88(show_options)
+     605    0.003    0.003  solver.py:188(get_cube)
+    4617    0.000    0.000  {len}
+     542    0.000    0.000  {method 'append' of 'list' objects}
+
+</code></pre>
+  </section>
+
+  <section>
+    <h3>the code</h3>
+    <pre><code class="python">
+    def find_number_pairs_in_cube(self, row_min, col_min):
+        ...
+        log.debug("Current state of game board:\n%s\n%s",
+                  self, self.show_options())
+        ...
+    </code></pre>
+  </section>
+
+  <section>
+    <h3>the solution</h3>
+    <pre><code class="python">
+    class BoardPresenter(object):
+
+        def __init__(self, board):
+            self.board = board
+        def __str__(self):
+            ...
+
+    def find_number_pairs_in_cube(self, row_min, col_min):
+        ...
+        log.debug("Current state of game board:\n%s",
+                  BoardPresenter(self))
+        ...
+    </code></pre>
+  </section>
+
+  <section>
+    <h3>re-timeit</h3>
+    <pre><code class="bash">
+    $ python -m timeit 'import runall; runall.run()'
+    10 loops, best of 3: 106 msec per loop
+
+    </code></pre>
+   </section>
 </section>
 
 
 <section>
-    <h2></h2>
+  <section>
+    <h3>repeat</h3>
+    <pre><code class="python">
+ ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+      1    0.001    0.001    0.164    0.164 runall.py:3(&lt;module&gt;)
+      1    0.000    0.000    0.161    0.161 runall.py:9(run)
+   11/7    0.007    0.001    0.158    0.023 solver.py:303(solve)
+   2095    0.028    0.000    0.057    0.000 solver.py:106(find_options_for)
+   1523    0.028    0.000    0.039    0.000 solver.py:121(identify_only_possibility)
+ 3970/4    0.006    0.000    0.021    0.005 /usr/lib/python2.7/copy.py:145(deepcopy)
+  652/4    0.002    0.000    0.021    0.005 /usr/lib/python2.7/copy.py:306(_reconstruct)
+  328/4    0.001    0.000    0.021    0.005 /usr/lib/python2.7/copy.py:253(_deepcopy_dict)
+  404/8    0.001    0.000    0.020    0.003 /usr/lib/python2.7/copy.py:226(_deepcopy_list)
+   4286    0.016    0.000    0.020    0.000 solver.py:194(get_cube)
+
+    </pre></code>
+  </section>
+
+  <section>
+    <h3>the code</h3>
+    <pre><code class="python">
+  def identify_only_possibility(self, r, c):
+      target = self.rows[r][c]
+
+      related = self.rows[r], self.cols[c], self.get_cube(r, c, self.rows)
+      for related_list in related:
+          others_options = set()
+
+          for square in ifilterfalse(lambda s: s is target, related_list):
+              others_options |= set(square.options)
+
+          options = target.options - others_options
+          if len(options) == 1:
+              return options
+      return False
+    </code></pre>
+  </section>
+
+
+  <section>
+    <pre><code class="python">
+      option_filter = functools.partial(operator.is_, target)
+            
+      def get_other_options(related_list):
+          return set(itertools.chain.from_iterable(
+                      square.options for square in
+                      ifilterfalse(option_filter, related_list)))
+
+      def get_related_lists():
+          yield self.rows[r]
+          yield self.cols[c]
+          yield self.get_cube(r, c, self.rows)
+        
+      for related_list in get_related_lists()
+          options = target.options - get_other_options(related_list)
+          ...
+    </code></pre>
+  </section>
 </section>
 
 
 <section>
-    <h2></h2>
+  <section>
+    <h3>deepcopy</h3>
+    <pre><code class="python">
+>>> p.print_callers('deepcopy')
+
+ ncalls  tottime  cumtime
+1022/72    0.002    0.020  /usr/lib/python2.7/copy.py:226(_deepcopy_list)
+    652    0.001    0.002  /usr/lib/python2.7/copy.py:234(_deepcopy_tuple)
+1312/16    0.002    0.021  /usr/lib/python2.7/copy.py:253(_deepcopy_dict)
+  980/8    0.002    0.021  /usr/lib/python2.7/copy.py:306(_reconstruct)
+      4    0.000    0.021  solver.py:303(solve)
+    </code></pre>
+  </section>
+
+  <section>
+    <h3>the code</h3>
+    <pre><code class="python">
+    import copy
+
+    ...
+
+    new_board = copy.deepcopy(board)
+    </code></pre>
+  </section>
+
+  <section>
+    <h3>the solution</h3>
+    <pre><code class="python">        
+    def clone(self):
+        return type(self)(board=self)
+
+    ...
+
+    new_board = board.clone()
+
+    </code></pre>
+  </section>
+
+  <section>
+    <h3>re-timeit</h3>
+    <pre><code class="bash">
+  $ python -m timeit 'import runall; runall.run()'
+  10 loops, best of 3: 94.9 msec per loop
+
+    </code></pre>
+
+  </section>
 </section>
 
 <section>
-    <h2></h2>
+    <h2>Outcome</h2>
+    <p>From 135ms to 95ms by making 2 small changes</p>
 </section>
 
 <section>
@@ -245,7 +431,8 @@ ncalls  tottime  percall  cumtime  percall filename:lineno(function)
     <ul>
       <li>deepcopy</li>
       <li>loops</li>
-      <li>dynamic variable lookups</li>
+      <li>dynamic variable lookup</li>
+      <li>eager evaluation</li>
     </ul>
 </section>
 
