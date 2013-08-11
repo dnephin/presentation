@@ -63,7 +63,48 @@
     margin-bottom: 0.5em;
 }
 
+.reveal pre {
+  width: 100%;
+  font-size: 0.62em;
+}
+
+.reveal img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.reveal pre code {
+  color: #fff;
+  background: #222;
+  max-height: none;
+}
+
+pre .function .title {
+  color: #FF0;
+}
+
+pre .keyword {
+  color: #FFC25C;
+}
+
+pre .python .decorator {
+  color: #ff0;
+}
+
+pre .string {
+  color:  #FDB7B7;
+}
+
+pre .number {
+  color: #00F4FF;
+}
+
+
+::selection {
+  background: #FF5E99;
+}
         </style>
+
 	</head>
 
 	<body>
@@ -101,8 +142,8 @@ Make It Work Make It Right Make It Fast
 <section>
     <h2>timeit</h2>
     <pre><code class="bash">
-    $ python -m timeit 'import runall; runall.run()'
-    10 loops, best of 3: 135 msec per loop
+    $ python -m timeit -r 5 'import runall; runall.run()'
+    10 loops, best of 5: 135 msec per loop
     </code></pre>
 </section>
 
@@ -124,14 +165,14 @@ Make It Work Make It Right Make It Fast
     $ python -m cProfile -o runall.pstats runall.py
     $
     $ python -m pstats runall.pstats
-    Welcome to the profile statistics browser.
+
     runall.pstats% sort cumulative
     runall.pstats% stats 10
     </code></pre>
 </section>
 
 <section>
-    <pre><code style="max-height: none;" class="python">
+    <pre><code class="python">
   317050 function calls (311709 primitive calls) in 0.200 seconds
 
   Ordered by: cumulative time
@@ -175,8 +216,7 @@ ncalls  tottime  percall  cumtime  percall filename:lineno(function)
         http://code.google.com/p/jrfonseca/wiki/Gprof2Dot</a>
 
     <pre><code class="bash">
-
-    $ gprof2dot -f pstats runall.pstats | dot -Tpdf -o output.pdf
+ $ gprof2dot -f pstats runall.pstats | dot -Tpdf -o output.pdf
     </code></pre>
 </section>
 
@@ -246,7 +286,6 @@ ncalls  tottime  cumtime    filename:lineno(function)
         options -= set(other_index[c])
         options -= set(self.get_cube(r, c, index))
         return options
-
     </code></pre>
   </section>
 </section>
@@ -254,8 +293,23 @@ ncalls  tottime  cumtime    filename:lineno(function)
 <section>
 
   <section>
+      <h3>next</h3>
+      <pre><code>
+ncalls  tottime  cumtime    filename:lineno(function)
+     1    0.001    0.200    runall.py:3(&lt;module&gt;)
+     1    0.000    0.198    runall.py:9(run)
+  11/7    0.007    0.195    solver.py:297(solve)
+  2095    0.027    0.055    solver.py:100(find_options_for)
+   513    0.005    0.050    solver.py:234(find_number_pairs_in_cube)
+   535    0.037    0.040    solver.py:88(show_options)
+  1523    0.027    0.037    solver.py:115(identify_only_possibility)
+      </pre></code>
+  </section>
+
+
+  <section>
   <h3>Aha!</h3>
-<pre><code class="python">
+      <pre><code class="python">
   >>> p.print_callees('find_number_pairs_in_cube')
 
   ncalls  tottime  cumtime
@@ -265,8 +319,7 @@ ncalls  tottime  cumtime    filename:lineno(function)
      605    0.003    0.003  solver.py:188(get_cube)
     4617    0.000    0.000  {len}
      542    0.000    0.000  {method 'append' of 'list' objects}
-
-</code></pre>
+      </code></pre>
   </section>
 
   <section>
@@ -313,18 +366,17 @@ ncalls  tottime  cumtime    filename:lineno(function)
   <section>
     <h3>repeat</h3>
     <pre><code class="python">
- ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-      1    0.001    0.001    0.164    0.164 runall.py:3(&lt;module&gt;)
-      1    0.000    0.000    0.161    0.161 runall.py:9(run)
-   11/7    0.007    0.001    0.158    0.023 solver.py:303(solve)
-   2095    0.028    0.000    0.057    0.000 solver.py:106(find_options_for)
-   1523    0.028    0.000    0.039    0.000 solver.py:121(identify_only_possibility)
- 3970/4    0.006    0.000    0.021    0.005 /usr/lib/python2.7/copy.py:145(deepcopy)
-  652/4    0.002    0.000    0.021    0.005 /usr/lib/python2.7/copy.py:306(_reconstruct)
-  328/4    0.001    0.000    0.021    0.005 /usr/lib/python2.7/copy.py:253(_deepcopy_dict)
-  404/8    0.001    0.000    0.020    0.003 /usr/lib/python2.7/copy.py:226(_deepcopy_list)
-   4286    0.016    0.000    0.020    0.000 solver.py:194(get_cube)
-
+ ncalls  tottime  cumtime  filename:lineno(function)
+      1    0.001    0.164  runall.py:3(&lt;module&gt;)
+      1    0.000    0.161  runall.py:9(run)
+   11/7    0.007    0.158  solver.py:303(solve)
+   2095    0.028    0.057  solver.py:106(find_options_for)
+   1523    0.028    0.039  solver.py:121(identify_only_possibility)
+ 3970/4    0.006    0.021  .../copy.py:145(deepcopy)
+  652/4    0.002    0.021  .../copy.py:306(_reconstruct)
+  328/4    0.001    0.021  .../copy.py:253(_deepcopy_dict)
+  404/8    0.001    0.020  .../copy.py:226(_deepcopy_list)
+   4286    0.016    0.020  solver.py:194(get_cube)
     </pre></code>
   </section>
 
@@ -373,15 +425,33 @@ ncalls  tottime  cumtime    filename:lineno(function)
 
 <section>
   <section>
+    <h3>and again</h3>
+    <pre><code class="python">
+ ncalls  tottime  cumtime  filename:lineno(function)
+      1    0.001    0.164  runall.py:3(&lt;module&gt;)
+      1    0.000    0.161  runall.py:9(run)
+   11/7    0.007    0.158  solver.py:303(solve)
+   2095    0.028    0.057  solver.py:106(find_options_for)
+   1523    0.028    0.039  solver.py:121(identify_only_possibility)
+ 3970/4    0.006    0.021  .../copy.py:145(deepcopy)
+  652/4    0.002    0.021  .../copy.py:306(_reconstruct)
+  328/4    0.001    0.021  .../copy.py:253(_deepcopy_dict)
+  404/8    0.001    0.020  .../copy.py:226(_deepcopy_list)
+   4286    0.016    0.020  solver.py:194(get_cube)
+    </pre></code>
+  </section>
+
+
+  <section>
     <h3>deepcopy</h3>
     <pre><code class="python">
 >>> p.print_callers('deepcopy')
 
  ncalls  tottime  cumtime
-1022/72    0.002    0.020  /usr/lib/python2.7/copy.py:226(_deepcopy_list)
-    652    0.001    0.002  /usr/lib/python2.7/copy.py:234(_deepcopy_tuple)
-1312/16    0.002    0.021  /usr/lib/python2.7/copy.py:253(_deepcopy_dict)
-  980/8    0.002    0.021  /usr/lib/python2.7/copy.py:306(_reconstruct)
+1022/72    0.002    0.020  /usr/lib/python/copy.py:226(_deepcopy_list)
+    652    0.001    0.002  /usr/lib/python/copy.py:234(_deepcopy_tuple)
+1312/16    0.002    0.021  /usr/lib/python/copy.py:253(_deepcopy_dict)
+  980/8    0.002    0.021  /usr/lib/python/copy.py:306(_reconstruct)
       4    0.000    0.021  solver.py:303(solve)
     </code></pre>
   </section>
@@ -389,24 +459,37 @@ ncalls  tottime  cumtime    filename:lineno(function)
   <section>
     <h3>the code</h3>
     <pre><code class="python">
-    import copy
+  class Square(object):
+      def __init__(self, num):
+          self.value = int(num)
+          self.options = ...
 
-    ...
+  class SudokuBoard(object):
+      def __init__(self, initial_state=None):
+          self.rows = self.load_board(initial_state)
+          ...
 
-    new_board = copy.deepcopy(board)
+  ...
+  new_board = copy.deepcopy(board)
     </code></pre>
   </section>
 
   <section>
     <h3>the solution</h3>
-    <pre><code class="python">        
-    def clone(self):
-        return type(self)(board=self)
+    <pre><code class="python">
+  class Square(object):
+      def __init__(self, num, options=()):
+          self.value = int(num)
+          self.options = set(options) or ...
+
+  class SudokuBoard(object):
+      def __init__(self, initial_state=None):
+          ...
+      def clone(self):
+          return type(self)(initial_state=self.get_state())
 
     ...
-
     new_board = board.clone()
-
     </code></pre>
   </section>
 
@@ -414,7 +497,7 @@ ncalls  tottime  cumtime    filename:lineno(function)
     <h3>re-timeit</h3>
     <pre><code class="bash">
   $ python -m timeit 'import runall; runall.run()'
-  10 loops, best of 3: 94.9 msec per loop
+  10 loops, best of 3: 91.8 msec per loop
 
     </code></pre>
 
@@ -423,7 +506,7 @@ ncalls  tottime  cumtime    filename:lineno(function)
 
 <section>
     <h2>Outcome</h2>
-    <p>From 135ms to 95ms by making 2 small changes</p>
+    <p>From 135ms to 92ms by making 2 small changes</p>
 </section>
 
 <section>
@@ -448,19 +531,21 @@ ncalls  tottime  cumtime    filename:lineno(function)
 
 <section>
     <h2>Sampling</h2>
-    <pre><code>
-    import contextlib, cProfile
-
-    profiler = cProfile.Profile()
-
+    <pre><code class="python">
     @contextlib.contextmanager
-    def profile_section():
+    def profile_section(filename):
+        profiler = cProfile.Profile()
         profiler.enable()
         yield
         profiler.disable()
+        profiler.dump_stats(filename)
+    </code></pre>
+    <pre><code class="python">
+    class ProfiledThread(threading.Thread):
 
-    ...
-    profiler.dump_stats(filename)
+        def run(self):
+            with profile_section(threading.get_ident()):
+                ...
     </code></pre>
 </section>
 
@@ -472,7 +557,8 @@ ncalls  tottime  cumtime    filename:lineno(function)
     merged_stats = pstats.Stats('1.profile',
                                 '2.profile',
                                 '3.profile')
-    
+   
+    merged_stats.add('4.profile')
     </code></pre>
 
 </section>
@@ -502,7 +588,7 @@ ncalls  tottime  cumtime    filename:lineno(function)
 				progress:       true,
 				history:        true,
 				center:         true,
-                rollingLinks:   false,
+        rollingLinks:   false,
 				transition:     'fade', // default/cube/page/concave/zoom/linear/fade/none
 				theme:          'sky',
 
