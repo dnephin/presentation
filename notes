@@ -1,0 +1,11 @@
+
+- overview of HTTP request/response
+- raw handling of a request
+- wsgi (PEP)
+- frameworks
+- routing
+- validation
+- persistence
+- templating
+- middleware/hooks/tweens
+
