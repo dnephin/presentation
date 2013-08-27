@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>python-web-apps</title>
+		<title>Python Web Apps</title>
 
 		<meta name="author" content="Daniel Nephin">
 
@@ -16,8 +16,8 @@
 		<link rel="stylesheet" href="reveal.js/css/reveal.min.css">
 		<link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
 
-    <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Monda' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Monda' rel='stylesheet' type='text/css'>
 
 		<!-- For syntax highlighting -->
 		<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
@@ -45,6 +45,9 @@
   letter-spacing: normal;
 }
 
+.reveal pre code.http {
+    padding: 5px 2em;
+}
 
 
     </style>
@@ -54,16 +57,92 @@
 
 		<div class="reveal">
 			<div class="slides">
+<section>
+    <h1>Python Web Applications</h1>
+</section>
 
-				<section>
-                    <h1>Example</h1>
-                    <h2>This is how it's done</h2>
-				</section>
+<section>
+    <h2>What is a web app?</h2>
+    <ul>
+        <li>receive an HTTP request</li>
+        <li>do something</li>
+        <li>return an HTTP response</li>
+    </ul>
+</section>
 
-                <section>
-                    <h2></h2>
+<section>
+    <h3>The Request</h3>
+    <pre><code class="http">
+GET / HTTP/1.1
 
-                </section>
+Host: python.org
+User-Agent: Chrome
+    </code></pre>
+</section>
+
+<section>
+    <h3>Socket Server</h3>
+    <pre><code class="python">
+    class SimpleHandler(http.server.BaseHTTPRequestHandler):
+
+        def do_GET(self):
+            self.wfile.write(
+                b"""HTTP/1.1 200 OK\r\n\r\n<html><body>Hello</body></html>\r\n""")
+
+    http.server.HTTPServer(('', 8000), SimpleHandler).serve_forever()
+    </code></pre>
+</section>
+
+<section>
+    <h3>The Response</h3>
+    <pre><code class="http">
+HTTP/1.1 200 OK
+
+&lt;html&gt;&lt;body&gt;Hello&lt;/body&gt;&lt;/html&gt;
+    </code></pre>
+</section>
+
+<section>
+    <h3>The Old Way</h3>
+    <ul>
+        <li>socket server</li>
+        <li>common gateway interface (cgi)</li>
+        <li>mod_python</li>
+    </ul>
+</section>
+
+<section>
+    <h2>WSGI</h2>
+    <p>
+        <a href="http://www.python.org/dev/peps/pep-0333/">PEP 333</a>
+    </p>
+    <blockquote>
+a standard interface between web servers and Python web applications or frameworks, to promote web application portability across a variety of web servers
+    </blockquote>
+</section>
+
+<section>
+    <h2>Why Frameworks?</h2>
+    <ul>
+        <li>request routing</li>
+        <li>input validation</li>
+        <li>data persistence</li>
+        <li>response templating</li>
+    </ul>
+</section>
+
+<section>
+    <pre><code class="python">
+    </code></pre>
+</section>
+
+<section>
+    <h2></h2>
+</section>
+
+<section>
+    <h2></h2>
+</section>
 
 			</div>
 		</div>
@@ -79,8 +158,8 @@
 				history:        true,
 				center:         true,
                 rollingLinks:   false,
-				transition:     'zoom', // default/cube/page/concave/zoom/linear/fade/none
-				theme:          'sky',
+				transition:     'linear', // default/cube/page/concave/zoom/linear/fade/none
+				theme:          'moon',
 
 				dependencies: [
 					{ src: 'reveal.js/lib/js/classList.js',
