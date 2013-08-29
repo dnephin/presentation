@@ -122,13 +122,140 @@ a standard interface between web servers and Python web applications or framewor
 </section>
 
 <section>
+    <pre><code class="python">
+    def simple_app(environ, start_response):
+        status = '200 OK'
+        response_headers = [('Content-type', 'text/plain')]
+        start_response(status, response_headers)
+        return ['Hello world!\n']
+    </code></pre>
+</section>
+
+
+<section>
+    <dl>
+        <dt>environ</dt>
+        <dl>dictionary of environment variables from the request</dl>
+        <dt>start_response</dt>
+        <dl>callable used to set status and headers</dl>
+    </dl>
+    <h3>&#x2193;</h3>
+    <p>iteration of strings</p>
+</section>
+
+<section>
     <h2>Why Frameworks?</h2>
     <ul>
         <li>request routing</li>
         <li>input validation</li>
         <li>data persistence</li>
         <li>response templating</li>
+        <li>convention</li>
     </ul>
+</section>
+
+<section>
+    <section>
+        <h2>Routing</h2>
+        <p>/some/restful/url <strong>&#x2192;</strong> webapp.views.get_url()</p> 
+    </section>
+
+    <section>
+        <h3>Decorators</h3>
+        <p><em>frameworks: Flask, Bottle, Pyramid</em></p>
+        
+        <pre><code class="python">
+    @app.route("/hello/plain")
+    def hello_view():
+        return "Hello World!"
+        </code></pre>
+    </section>
+
+    <section>
+        <h3>Regex / Patterns</h3>
+        <p><em>frameworks: Django, web.py, web2py</em></p>
+        
+        <pre><code class="python">
+    urlpatterns = patterns('',
+        url(r'^articles/special$', 'news.views.special_case'),
+        url(r'^articles/(\d{4})/$', 'news.views.year_archive'),
+    )
+        </code></pre>
+    </section>
+
+    <section>
+        <h3>Traversal / Object Dispatch</h3>
+        <p><em>frameworks: Twisted, TurboGears, CherryPy</em></p>
+        <pre><code class="python">
+    class MovieController(BaseController):
+
+        @expose()
+        def list(self):
+            return 'hello'
+
+    class RootController(BaseController):
+        movie = MovieController() 
+        </code></pre>
+    </section>
+
+</section>
+
+<section>
+    <section>
+        <h2>Validation</h2>
+        <div>
+            <pre><code class="http">
+POST /event/34/register HTTP/1.1
+
+name=Daniel&amp;guests=4&amp;date=2013-05-01
+            </code></pre>
+        </div>
+
+        <div><strong>&#x2193;</strong></div>
+
+        <div>
+            <pre><code class="python">
+    event_id = 34
+    details = {
+        'name': 'Daniel',
+        'guests': 4,
+        'date': datetime.date(2013, 5, 1)
+    }
+            </code></pre>
+        </div>
+    </section>
+    <section>
+        <h3></h3>
+        <pre><code class="python">
+        </code></pre>
+    </section>
+    <section>
+        <h3></h3>
+        <pre><code class="python">
+        </code></pre>
+    </section>
+    <section>
+        <h3></h3>
+        <pre><code class="python">
+        </code></pre>
+    </section>
+    <section>
+        <h3></h3>
+        <pre><code class="python">
+        </code></pre>
+    </section>
+</section>
+
+<section>
+    <h2></h2>
+</section>
+
+<section>
+    <h2></h2>
+</section>
+
+<section>
+    <h2></h2>
 </section>
 
 <section>
@@ -144,6 +271,10 @@ a standard interface between web servers and Python web applications or framewor
     <h2></h2>
 </section>
 
+<section>
+    <h2>Read More</h2>
+    <p><a href="http://wsgi.org">wsgi.org</a></p>
+</section>
 			</div>
 		</div>
 
