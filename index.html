@@ -1,39 +1,39 @@
 <!doctype html>
 <html lang="en">
 
-	<head>
-		<meta charset="utf-8">
+    <head>
+        <meta charset="utf-8">
 
-		<title>Python Web Frameworks</title>
+        <title>Python Web Frameworks</title>
 
-		<meta name="author" content="Daniel Nephin">
+        <meta name="author" content="Daniel Nephin">
 
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<link rel="stylesheet" href="reveal.js/css/reveal.min.css">
-		<link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
+        <link rel="stylesheet" href="reveal.js/css/reveal.min.css">
+        <link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
 
         <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
         <link href='http://fonts.googleapis.com/css?family=Monda' rel='stylesheet' type='text/css'>
 
-		<!-- For syntax highlighting -->
-		<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+        <!-- For syntax highlighting -->
+        <link rel="stylesheet" href="css/highlight-themes/hemisu-light.css">
 
-		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
-		<script>
+        <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+        <script>
             var css = window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper';
-			document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + css + 
+            document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + css + 
                             '.css" type="text/css" media="print">' );
-		</script>
+        </script>
 
-		<!--[if lt IE 9]>
-		<script src="reveal.js/lib/js/html5shiv.js"></script>
-		<![endif]-->
+        <!--[if lt IE 9]>
+        <script src="reveal.js/lib/js/html5shiv.js"></script>
+        <![endif]-->
 
-		<script src="reveal.js/lib/js/head.min.js"></script>
+        <script src="reveal.js/lib/js/head.min.js"></script>
     <style>
 .reveal {
   font-family: 'PT Sans', sans-serif;
@@ -53,21 +53,28 @@
   padding: 2em;
 }
 
-.reveal code {
+.reveal pre code {
   margin: 0 auto;
+  max-height: none;
 }
 
 .reveal pre {
-  box-shadow: none;
+  font-size: 0.7em;
 }
 
+.reveal pre.span50 { width: 50%; }
+.reveal pre.span60 { width: 60%; }
+.reveal pre.span65 { width: 65%; }
+.reveal pre.span70 { width: 70%; }
+.reveal pre.span80 { width: 80%; }
+
     </style>
-	</head>
+    </head>
 
-	<body>
+    <body>
 
-		<div class="reveal">
-			<div class="slides">
+        <div class="reveal">
+            <div class="slides">
 <section>
     <h1>Python Web Frameworks</h1>
 </section>
@@ -90,7 +97,7 @@
 
 <section>
     <h3>The Request</h3>
-    <pre><code class="http">
+    <pre class="span50"><code class="http">
 GET / HTTP/1.1
 
 Host: python.org
@@ -99,7 +106,6 @@ User-Agent: Chrome
 </section>
 
 <section>
-    <h3>Socket Server</h3>
     <pre><code class="python">
     print("HTTP/1.1 200 OK\r\n\r\n"
           "&lt;html&gt;&lt;body&gt;Hello&lt;/body&gt;&lt;/html&gt;\r\n")
@@ -109,7 +115,7 @@ User-Agent: Chrome
 
 <section>
     <h3>The Response</h3>
-    <pre><code class="http">
+    <pre class="span65"><code class="http">
 HTTP/1.1 200 OK
 
 &lt;html&gt;&lt;body&gt;Hello&lt;/body&gt;&lt;/html&gt;
@@ -119,7 +125,6 @@ HTTP/1.1 200 OK
 <section>
     <h3>The Old Way</h3>
     <ul>
-        <li>socket server</li>
         <li>common gateway interface (cgi)</li>
         <li>mod_python</li>
     </ul>
@@ -136,12 +141,13 @@ a standard interface between web servers and Python web applications or framewor
 </section>
 
 <section>
+    <h3>WSGI application</h3>
     <pre><code class="python">
-    def simple_app(environ, start_response):
-        status = '200 OK'
-        response_headers = [('Content-type', 'text/plain')]
-        start_response(status, response_headers)
-        return ['Hello world!\n']
+  def simple_app(environ, start_response):
+      status = '200 OK'
+      response_headers = [('Content-type', 'text/plain')]
+      start_response(status, response_headers)
+      return ['Hello world!\n']
     </code></pre>
 </section>
 
@@ -178,7 +184,7 @@ a standard interface between web servers and Python web applications or framewor
         <h3>Decorators</h3>
         <p><em>frameworks: Flask, Bottle, Pyramid</em></p>
         
-        <pre><code class="python">
+        <pre class="span60"><code class="python">
     @app.route("/hello/plain")
     def hello_view():
         return "Hello World!"
@@ -189,18 +195,19 @@ a standard interface between web servers and Python web applications or framewor
         <h3>Regex / Patterns</h3>
         <p><em>frameworks: Django, web.py, web2py</em></p>
         
-        <pre><code class="python">
-    urlpatterns = patterns('',
-        url(r'^articles/special$', 'news.views.special_case'),
-        url(r'^articles/(\d{4})/$', 'news.views.year_archive'),
-    )
+        <pre class="span70"><code class="python">
+  urlpatterns = patterns('',
+      url(r'^articles/(\d{4})/$',
+          'news.views.year_archive'),
+      ...
+  )
         </code></pre>
     </section>
 
     <section>
         <h3>Traversal / Object Dispatch</h3>
         <p><em>frameworks: Twisted, TurboGears, CherryPy</em></p>
-        <pre><code class="python">
+        <pre class="span80"><code class="python">
     class MovieController(BaseController):
 
         @expose()
@@ -238,38 +245,145 @@ name=Daniel&amp;guests=4&amp;date=2013-05-01
             </code></pre>
         </div>
     </section>
+
     <section>
-        <h3></h3>
+        <h3>Request Objects</h3>
+        <p><em>libraries: WebOb, Werkzeug</em></p>
+        <pre class="span50"><code class="python">
+  request = Request(environ)
+  request.body
+  request.headers
+  request.GET
+  ...
+        </code></pre>
+    </section>
+
+    <section>
+        <h3>Forms</h3>
+        <p><em>libraries: WTForms, django.forms, web.py</em></p>
         <pre><code class="python">
+  class MyForm(Form):
+      first_name = TextField(
+          u'First Name'
+          validators=[validators.required()])
+
+      last_name  = TextField(
+          u'Last Name',
+          validators=[validators.optional()])
         </code></pre>
     </section>
     <section>
-        <h3></h3>
+        <h3>Schemas</h3>
+        <p><em>libraries: colander</em></p>
         <pre><code class="python">
-        </code></pre>
-    </section>
-    <section>
-        <h3></h3>
-        <pre><code class="python">
-        </code></pre>
-    </section>
-    <section>
-        <h3></h3>
-        <pre><code class="python">
+  class Person(colander.MappingSchema):
+
+      name = colander.SchemaNode(colander.String())
+
+      age  = colander.SchemaNode(colander.Integer(),
+                 validator=colander.Range(0, 200))
         </code></pre>
     </section>
 </section>
 
 <section>
-    <h2></h2>
+    <section>
+      <h2>Persistence</h2>
+      <ul>
+        <li>relational databases</li>
+        <li>key-value stores</li>
+        <li>document stores</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>ORM</h2>
+        <p><em>libraries: Django, sqlalchemy, web2py</em></p>
+      <pre><code class="python">
+ class User(db.Model):
+     id       = db.Column(db.Integer, primary_key=True)
+     username = db.Column(db.String(80), unique=True)
+     email    = db.Column(db.String(120), unique=True)
+      </code></pre>
+    </section>
 </section>
 
 <section>
-    <h2></h2>
+  <section>
+    <h2>Templating</h2>
+        <div>
+            <pre><code class="python">
+  context = {
+      'name': 'Python Dev',
+      'location': 'Edmonton'
+  }
+            </code></pre>
+        </div>
+
+        <div><strong>&#x2193;</strong></div>
+
+        <div>
+            <pre><code class="html">
+  &lt;div&gt;
+    &lt;h3&gt;Python Dev&lt;/h3&gt;
+    &lt;p&gt;&lt;strong&gt;Location:&lt;/strong&gt; Edmonton&lt;/p&gt;
+  &lt;/div&gt;
+            </code></pre>
+        </div>
+  </section>
+
+  <section>
+    <h3>Mako</h3>
+    <pre class="span70"><code>
+  &lt;table&gt;
+      % for row in rows:
+          ${makerow(row)}
+      % endfor
+  &lt;/table&gt;
+  &lt;%def name="makerow(row)"&gt;
+      &lt;tr&gt;
+      % for name in row:
+          &lt;td&gt;${name}&lt;/td&gt;\
+      % endfor
+      &lt;/tr&gt;
+  &lt;/%def&gt;
+    </code></pre>
+  </section>
+
+  <section>
+    <h3>Jinja / Django</h3>
+    <pre class="span80"><code class="html">
+  {% for item in navigation %}
+      &lt;li&gt;
+        &lt;a href="{{ item.href }}"&gt;
+            {{ item.caption|lower }}&lt;/a&gt;
+      &lt;/li&gt;
+  {% endfor %}
+    </code></pre>
+  </section>
+
+  <section>
+    <h3>Mustache</h3>
+    <pre><code class="html">
+  {{#items}}
+    {{#first}}
+      &lt;li&gt;&lt;strong&gt;{{name}}&lt;/strong&gt;&lt;/li&gt;
+    {{/first}}
+    {{#link}}
+      &lt;li&gt;&lt;a href="{{url}}"&gt;{{name}}&lt;/a&gt;&lt;/li&gt;
+    {{/link}}
+  {{/items}}
+    </code></pre>
+  </section>
+
 </section>
 
 <section>
-    <h2></h2>
+    <h2>Extensions</h2>
+    <ul>
+      <li>hooks</li>
+      <li>middleware</li>
+    </ul>
 </section>
 
 <section>
@@ -289,46 +403,46 @@ name=Daniel&amp;guests=4&amp;date=2013-05-01
     <h2>Read More</h2>
     <p><a href="http://wsgi.org">wsgi.org</a></p>
 </section>
-			</div>
-		</div>
+            </div>
+        </div>
 
-		<script src="reveal.js/js/reveal.min.js"></script>
-		<script>
+        <script src="reveal.js/js/reveal.min.js"></script>
+        <script>
 
-			// Full list of configuration options available here:
-			// https://github.com/hakimel/reveal.js#configuration
-			Reveal.initialize({
-				controls:       false,
-				progress:       true,
-				history:        true,
-				center:         true,
+            // Full list of configuration options available here:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls:       false,
+                progress:       true,
+                history:        true,
+                center:         true,
                 rollingLinks:   false,
-				transition:     'linear', // default/cube/page/concave/zoom/linear/fade/none
-				theme:          'moon',
+                transition:     'linear', // default/cube/page/concave/zoom/linear/fade/none
+                theme:          'solarized',
 
-				dependencies: [
-					{ src: 'reveal.js/lib/js/classList.js',
+                dependencies: [
+                    { src: 'reveal.js/lib/js/classList.js',
                       condition: function() { return !document.body.classList; } },
-					{ src: 'reveal.js/plugin/markdown/marked.js',
+                    { src: 'reveal.js/plugin/markdown/marked.js',
                       condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'reveal.js/plugin/markdown/markdown.js',
+                    { src: 'reveal.js/plugin/markdown/markdown.js',
                       condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'reveal.js/plugin/highlight/highlight.js', async: true,
+                    { src: 'reveal.js/plugin/highlight/highlight.js', async: true,
                       callback: function() { hljs.initHighlightingOnLoad(); } },
-					{ src: 'reveal.js/plugin/zoom-js/zoom.js', async: true,
+                    { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true,
                       condition: function() { return !!document.body.classList; } },
-					{ src: 'reveal.js/plugin/notes/notes.js', async: true,
+                    { src: 'reveal.js/plugin/notes/notes.js', async: true,
                       condition: function() { return !!document.body.classList; } }
                     /*
-					{ src: 'reveal.js/plugin/search/search.js', async: true,
+                    { src: 'reveal.js/plugin/search/search.js', async: true,
                       condition: function() { return !!document.body.classList; } }
-					{ src: 'reveal.js/plugin/remotes/remotes.js', async: true,
+                    { src: 'reveal.js/plugin/remotes/remotes.js', async: true,
                       condition: function() { return !!document.body.classList; } }
                     */
-				]
-			});
+                ]
+            });
 
-		</script>
+        </script>
 
-	</body>
+    </body>
 </html>
