@@ -67,6 +67,7 @@
 .reveal pre.span65 { width: 65%; }
 .reveal pre.span70 { width: 70%; }
 .reveal pre.span80 { width: 80%; }
+.reveal pre.span95 { width: 95%; }
 
     </style>
     </head>
@@ -99,7 +100,6 @@
     <h3>The Request</h3>
     <pre class="span50"><code class="http">
 GET / HTTP/1.1
-
 Host: python.org
 User-Agent: Chrome
     </code></pre>
@@ -142,7 +142,7 @@ a standard interface between web servers and Python web applications or framewor
 
 <section>
     <h3>WSGI application</h3>
-    <pre><code class="python">
+    <pre class="span95"><code class="python">
   def simple_app(environ, start_response):
       status = '200 OK'
       response_headers = [('Content-type', 'text/plain')]
