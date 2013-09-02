@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>Python Web Apps</title>
+		<title>Python Web Frameworks</title>
 
 		<meta name="author" content="Daniel Nephin">
 
@@ -49,6 +49,17 @@
     padding: 5px 2em;
 }
 
+.reveal blockquote {
+  padding: 2em;
+}
+
+.reveal code {
+  margin: 0 auto;
+}
+
+.reveal pre {
+  box-shadow: none;
+}
 
     </style>
 	</head>
@@ -58,7 +69,14 @@
 		<div class="reveal">
 			<div class="slides">
 <section>
-    <h1>Python Web Applications</h1>
+    <h1>Python Web Frameworks</h1>
+</section>
+
+<section>
+  <blockquote>
+  a collection of packages or modules which allow developers to write
+  web applications or services.
+  </blockquote>
 </section>
 
 <section>
@@ -83,13 +101,9 @@ User-Agent: Chrome
 <section>
     <h3>Socket Server</h3>
     <pre><code class="python">
-    class SimpleHandler(http.server.BaseHTTPRequestHandler):
+    print("HTTP/1.1 200 OK\r\n\r\n"
+          "&lt;html&gt;&lt;body&gt;Hello&lt;/body&gt;&lt;/html&gt;\r\n")
 
-        def do_GET(self):
-            self.wfile.write(
-                b"""HTTP/1.1 200 OK\r\n\r\n<html><body>Hello</body></html>\r\n""")
-
-    http.server.HTTPServer(('', 8000), SimpleHandler).serve_forever()
     </code></pre>
 </section>
 
