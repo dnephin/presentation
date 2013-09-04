@@ -379,24 +379,68 @@ name=Daniel&amp;guests=4&amp;date=2013-05-01
 </section>
 
 <section>
+  <section>
     <h2>Extensions</h2>
+  </section>
+
+  <section>
+    <h3>Django</h3>
+    <p>Middleware</p>
     <ul>
-      <li>hooks</li>
-      <li>middleware</li>
+      <li>
+        Request
+        <ul>
+          <li>process_request()</li>
+          <li>process_view()</li>
+        </ul>
+      </li>
+      <li>Response
+        <ul>
+          <li>process_exception()</li>
+          <li>process_template_response()</li>
+          <li>process_response()</li>
+        </ul>
+      </li>
     </ul>
-</section>
+  </section>
 
-<section>
-    <pre><code class="python">
+  <section>
+    <h3>Bottle</h3>
+    <p>Hooks, and Plugins</p>
+    <pre class="span70"><code class="html">
+  @hook('before_request')
+  def check_permissions():
+      ...
+
+  @hook('after_request')
+  def enable_cors():
+      response.headers['X-Served'] = 1
     </code></pre>
+  </section>
+
+  <section>
+    <h3>Pyramid</h3>
+    <ul>
+      <li>error views hook</li>
+      <li>request factory hook</li>
+      <li>before render event</li>
+      <li>response callbacks</li>
+      <li>finished callbacks</li>
+      <li>traverser hook</li>
+      <li>configuration decorators</li>
+      <li>tweens</li>
+    </ul>
+  </section>
+
 </section>
 
 <section>
-    <h2></h2>
-</section>
+ <h3>Why use a web framework?</h3> 
+ <ul class="fragment">
+   <li>conventions</li>
+   <li>documentation</li>
+ </ul>
 
-<section>
-    <h2></h2>
 </section>
 
 <section>
