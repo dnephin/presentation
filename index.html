@@ -62,12 +62,32 @@
   font-size: 0.7em;
 }
 
-.reveal pre.span50 { width: 50%; }
-.reveal pre.span60 { width: 60%; }
-.reveal pre.span65 { width: 65%; }
-.reveal pre.span70 { width: 70%; }
-.reveal pre.span80 { width: 80%; }
-.reveal pre.span95 { width: 95%; }
+.reveal ul.none {
+	list-style-type: none;
+}
+
+
+
+.reveal .span50 { width: 50%; }
+.reveal .span60 { width: 60%; }
+.reveal .span65 { width: 65%; }
+.reveal .span70 { width: 70%; }
+.reveal .span80 { width: 80%; }
+.reveal .span95 { width: 95%; }
+
+.reveal div.left-div {
+  text-align: left;
+  margin: auto;
+}
+
+.reveal div.left-div h4 {
+  margin: 30px 0 10px;
+  line-height: 1em;
+}
+
+.reveal div.left-div p {
+  font-size: 0.8em;
+}
 
     </style>
     </head>
@@ -90,26 +110,31 @@
 <section>
     <h2>What is a web app?</h2>
     <ul>
-        <li>receive an HTTP request</li>
-        <li>do something</li>
-        <li>return an HTTP response</li>
+        <li>receives an HTTP request</li>
+        <li>does something</li>
+        <li>returns an HTTP response</li>
     </ul>
+</section>
+
+<section>
+  <img src="img/overview_diagram.png" style="border: 0; box-shadow: none;" />
 </section>
 
 <section>
     <h3>The Request</h3>
     <pre class="span50"><code class="http">
 GET / HTTP/1.1
-Host: python.org
+Host: example.org
 User-Agent: Chrome
     </code></pre>
 </section>
 
 <section>
     <pre><code class="python">
-    print("HTTP/1.1 200 OK\r\n\r\n"
-          "&lt;html&gt;&lt;body&gt;Hello&lt;/body&gt;&lt;/html&gt;\r\n")
-
+    print("HTTP/1.1 200 OK"
+          "\r\n\r\n"
+          "&lt;html&gt;&lt;body&gt;Hello&lt;/body&gt;&lt;/html&gt;"
+          "\r\n")
     </code></pre>
 </section>
 
@@ -131,37 +156,50 @@ HTTP/1.1 200 OK
 </section>
 
 <section>
+  <section>
     <h2>WSGI</h2>
     <p>
         <a href="http://www.python.org/dev/peps/pep-0333/">PEP 333</a>
     </p>
     <blockquote>
-a standard interface between web servers and Python web applications or frameworks, to promote web application portability across a variety of web servers
+a standard interface between web servers and Python web applications or
+frameworks, to promote web application portability across a variety of
+web servers
     </blockquote>
-</section>
+  </section>
 
-<section>
+  <section>
+    <h3>WSGI Interface</h3>
+    <pre><code class="python">
+  environment = {
+      'REQUEST_METHOD': 'GET',
+      'HTTP_HOST': 'example.com:80',
+      'wsgi.version': (1, 0),
+      ...
+  }
+  def start_response(status_code, headers):
+      ...
+    </code></pre>
+    <div><strong>&#x2193;</strong></div>
+
+    <pre><code class="python">
+  ['&lt;html&gt;&lt;body&gt;', 'Hello', '&lt;/body&gt;&lt;/html&gt;']
+    </code></pre>
+  </section>
+
+  <section>
     <h3>WSGI application</h3>
     <pre class="span95"><code class="python">
-  def simple_app(environ, start_response):
+  def simple_app(environment, start_response):
       status = '200 OK'
       response_headers = [('Content-type', 'text/plain')]
       start_response(status, response_headers)
       return ['Hello world!\n']
     </code></pre>
+  </section>
+
 </section>
 
-
-<section>
-    <dl>
-        <dt>environ</dt>
-        <dl>dictionary of environment variables from the request</dl>
-        <dt>start_response</dt>
-        <dl>callable used to set status and headers</dl>
-    </dl>
-    <h3>&#x2193;</h3>
-    <p>iteration of strings</p>
-</section>
 
 <section>
     <h2>Why Frameworks?</h2>
@@ -208,14 +246,15 @@ a standard interface between web servers and Python web applications or framewor
         <h3>Traversal / Object Dispatch</h3>
         <p><em>frameworks: Twisted, TurboGears, CherryPy</em></p>
         <pre class="span80"><code class="python">
+    class RootController(BaseController):
+        movie = MovieController()
+
     class MovieController(BaseController):
 
-        @expose()
+        # handles url /movie/list
+        @expose() 
         def list(self):
             return 'hello'
-
-    class RootController(BaseController):
-        movie = MovieController() 
         </code></pre>
     </section>
 
@@ -265,7 +304,8 @@ name=Daniel&amp;guests=4&amp;date=2013-05-01
   class MyForm(Form):
       first_name = TextField(
           u'First Name'
-          validators=[validators.required()])
+          validators=[validators.required()],
+          widget=FirstNameWidget())
 
       last_name  = TextField(
           u'Last Name',
@@ -405,6 +445,10 @@ name=Daniel&amp;guests=4&amp;date=2013-05-01
   </section>
 
   <section>
+    <img src="img/middleware.svg" />
+  </section>
+
+  <section>
     <h3>Bottle</h3>
     <p>Hooks, and Plugins</p>
     <pre class="span70"><code class="html">
@@ -435,17 +479,46 @@ name=Daniel&amp;guests=4&amp;date=2013-05-01
 </section>
 
 <section>
+
+  <section>
  <h3>Why use a web framework?</h3> 
  <ul class="fragment">
    <li>conventions</li>
    <li>documentation</li>
  </ul>
+ </section>
+
+ <section>
+   <h3>The Frameworks</h3>
+
+   <div class="left-div span50">
+
+     <h4>Microframeworks</h4>
+     <p>Flask, Bottle, CherryPy</p>
+
+     <h4>Full-Stack Frameworks</h4>
+     <p>Django, TurboGears, web2py</p>
+
+     <h4>Collection of Components</h4>
+     <p>Pyramid</p>
+   </div>
+ </section>
 
 </section>
 
 <section>
-    <h2>Read More</h2>
-    <p><a href="http://wsgi.org">wsgi.org</a></p>
+  <h2>Read More</h2>
+  <ul class="none">
+    <li><a href="http://wsgi.org">WSGI</a></li>
+    <li><a href="https://www.djangoproject.com/">Django</a></li>
+    <li><a href="http://www.pylonsproject.org/">Pyramid</a></li>
+    <li><a href="http://flask.pocoo.org/">Flask</a></li>
+    <li><a href="http://bottlepy.org/">Bottle</a></li>
+    <li><a href="http://www.sqlalchemy.org/">SQLAlchemy</a></li>
+    <li><a href="https://github.com/defunkt/pystache">PyStache</a></li>
+    <li><a href="http://www.makotemplates.org/">Mako</a></li>
+  </ul>
+
 </section>
             </div>
         </div>
