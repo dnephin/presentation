@@ -66,8 +66,6 @@
 	list-style-type: none;
 }
 
-
-
 .reveal .span50 { width: 50%; }
 .reveal .span60 { width: 60%; }
 .reveal .span65 { width: 65%; }
@@ -89,15 +87,48 @@
   font-size: 0.8em;
 }
 
-    </style>
+.rot-bot {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  position: relative;
+}
+.rot-left {
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  position: relative;
+  top: 136px;
+  left: -473px;
+}
+.rot-right {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  position: relative;
+  top: -136px;
+  left: 473px;
+}
+
+#title div {
+}
+
+   </style>
     </head>
 
     <body>
 
         <div class="reveal">
             <div class="slides">
-<section>
-    <h1>Python Web Frameworks</h1>
+<section id="title">
+    <div class="rot-left">works works</div>
+    <div><p>works works works works works works works works works</div>
+    <h1>Web</h1>
+    <div class="rot-bot">works works works works works works works works works</div>
+    <div class="rot-right">works works</div>
 </section>
 
 <section>
