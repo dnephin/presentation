@@ -1,39 +1,39 @@
 <!doctype html>
 <html lang="en">
 
-	<head>
-		<meta charset="utf-8">
+  <head>
+    <meta charset="utf-8">
 
-		<title>gluapy-sphinx-ext</title>
+    <title>gluapy.sphinxdoc</title>
 
-		<meta name="author" content="Daniel Nephin">
+    <meta name="author" content="Daniel Nephin">
 
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<link rel="stylesheet" href="reveal.js/css/reveal.min.css">
-		<link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
+    <link rel="stylesheet" href="reveal.js/css/reveal.min.css">
+    <link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
 
     <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Monda' rel='stylesheet' type='text/css'>
 
-		<!-- For syntax highlighting -->
-		<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="css/highlight-themes/tomorrow.css">
 
-		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
-		<script>
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
             var css = window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper';
-			document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + css + 
+      document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + css + 
                             '.css" type="text/css" media="print">' );
-		</script>
+    </script>
 
-		<!--[if lt IE 9]>
-		<script src="reveal.js/lib/js/html5shiv.js"></script>
-		<![endif]-->
+    <!--[if lt IE 9]>
+    <script src="reveal.js/lib/js/html5shiv.js"></script>
+    <![endif]-->
 
-		<script src="reveal.js/lib/js/head.min.js"></script>
+    <script src="reveal.js/lib/js/head.min.js"></script>
     <style>
 .reveal {
   font-family: 'PT Sans', sans-serif;
@@ -45,66 +45,154 @@
   letter-spacing: normal;
 }
 
+.reveal a {
+  color: #78b9e6 !important;
+}
+
+.reveal pre {
+  width: 100%;
+  margin: 0;
+  text-size: 0.5em;
+}
+
+.reveal pre code {
+  max-height: none;
+}
 
 
     </style>
-	</head>
+  </head>
 
-	<body>
+  <body>
 
-		<div class="reveal">
-			<div class="slides">
+    <div class="reveal">
+      <div class="slides">
 
-				<section>
-                    <h1>Example</h1>
-                    <h2>This is how it's done</h2>
-				</section>
+<section id="title">
+  <h3>gluapy</h3>
+  <h1>Sphinx Extension</h1>
+  <h3>for Service APIs</h3>
+</section>
 
-                <section>
-                    <h2></h2>
+<section>
+  <h2>gluapy</h2>
+  <p>
+  <a href="http://servicedocs/docs/gluapy/index.html">
+    http://servicedocs/docs/gluapy/</a>
+  </p>
+  <ul>
+    <li>define python service interface</li>
+    <li>colander to specify message format</li>
+    <li>primary goal to reduce duplication and boilerplate</li>
+  </ul>
 
-                </section>
+</section>
 
-			</div>
-		</div>
+<section>
 
-		<script src="reveal.js/js/reveal.min.js"></script>
-		<script>
+  <pre><code class="python">
 
-			// Full list of configuration options available here:
-			// https://github.com/hakimel/reveal.js#configuration
-			Reveal.initialize({
-				controls:       false,
-				progress:       true,
-				history:        true,
-				center:         true,
-                rollingLinks:   false,
-				transition:     'zoom', // default/cube/page/concave/zoom/linear/fade/none
-				theme:          'sky',
+ class FoodLocationSchema(colander.MappingSchema):
+ 
+     city = colander.SchemaNode(colander.String())
+     state = colander.SchemaNode(colander.String())
+     country = colander.SchemaNode(colander.String())
+ 
+ 
+ class FoodTypesSchema(colander.MappingSchema):
+ 
+     food_types = colander.SchemaNode(colander.Sequence(),
+                                      colander.SchemaNode(colander.String()),
+                                      description="List of food types.")
+ 
+ food_types = http.GET(
+         path='/location/food_types',
+         request_schema=http.make_multi_schema(params=FoodLocationSchema(),
+                                               headers=YelpHeaders),
+         response_schema=http.make_multi_schema(body=FoodTypesSchema()))
 
-				dependencies: [
-					{ src: 'reveal.js/lib/js/classList.js',
+  </code></pre>
+
+</section>
+
+<section>
+
+  <p>
+  <a href="http://servicedocs/docs/gluapy/sphinxdoc.html">
+    http://servicedocs/docs/gluapy/sphinxdoc.html</a>
+  </p>
+
+  <pre><code class="rst">
+  .. gluapy-spec-autodoc::
+      :client-mapping: example_clientlib.stub.client_specs
+      :view-package: example_service.views
+  </code></pre>
+
+</section>
+
+<section>
+  <a href="http://servicedocs/docs/example_service/api/index.html">
+    http://servicedocs/docs/example_service/api/index.html</a>
+</section>
+
+
+      </div>
+    </div>
+
+    <script src="reveal.js/js/reveal.min.js"></script>
+    <script>
+
+    var multiplex_plugin = null;
+    var secret = null;
+
+    if (window.location.search.match( /master/gi )) {
+      console.log('master');
+      multiplex_plugin = { src: 'reveal.js/plugin/multiplex/master.js', async: true };
+      secret = '13797065186542511141';
+    } else {
+      console.log('client');
+      multiplex_plugin = { src: 'reveal.js/plugin/multiplex/client.js', async: true };
+    }
+      
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls:       false,
+        progress:       true,
+        history:        true,
+        center:         true,
+        rollingLinks:   false,
+        transition:     'linear', // default/cube/page/concave/zoom/linear/fade/none
+        theme:          'moon',
+
+
+        multiplex: {
+          secret: secret, 
+          id: '31c8d5ed5ae1aa5d',
+          url: 'revealjs.jit.su:80'
+        },
+
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js',
                       condition: function() { return !document.body.classList; } },
-					{ src: 'reveal.js/plugin/markdown/marked.js',
+          { src: 'reveal.js/plugin/markdown/marked.js',
                       condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'reveal.js/plugin/markdown/markdown.js',
+          { src: 'reveal.js/plugin/markdown/markdown.js',
                       condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'reveal.js/plugin/highlight/highlight.js', async: true,
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true,
                       callback: function() { hljs.initHighlightingOnLoad(); } },
-					{ src: 'reveal.js/plugin/zoom-js/zoom.js', async: true,
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true,
                       condition: function() { return !!document.body.classList; } },
-					{ src: 'reveal.js/plugin/notes/notes.js', async: true,
-                      condition: function() { return !!document.body.classList; } }
-                    /*
-					{ src: 'reveal.js/plugin/search/search.js', async: true,
-                      condition: function() { return !!document.body.classList; } }
-					{ src: 'reveal.js/plugin/remotes/remotes.js', async: true,
-                      condition: function() { return !!document.body.classList; } }
-                    */
-				]
-			});
+          { src: 'reveal.js/plugin/notes/notes.js', async: true,
+                      condition: function() { return !!document.body.classList; } },
 
-		</script>
+          { src: 'http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.10/socket.io.min.js', async: true },
+          multiplex_plugin,
+        ]
+      });
 
-	</body>
+    </script>
+
+  </body>
 </html>
