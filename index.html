@@ -1,40 +1,35 @@
 <!doctype html>
 <html lang="en">
+    <head>
+        <meta charset="utf-8">
 
-	<head>
-		<meta charset="utf-8">
+        <title>$PRES_NAME</title>
 
-		<title>$PRES_NAME</title>
+        <meta name="author" content="Daniel Nephin">
+        <link rel="stylesheet" href="reveal.js/css/reveal.min.css">
+        <link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
+        <link href='http://fonts.googleapis.com/css?family=PT+Sans'
+              rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Monda'
+              rel='stylesheet' type='text/css'>
 
-		<meta name="author" content="Daniel Nephin">
+        <!-- For syntax highlighting -->
+        <link rel="stylesheet" href="reveal.js/css/highlight-themes/tomorrow.css">
 
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-		<link rel="stylesheet" href="reveal.js/css/reveal.min.css">
-		<link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
-
-    <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Monda' rel='stylesheet' type='text/css'>
-
-		<!-- For syntax highlighting -->
-		<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
-
-		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
-		<script>
+        <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+        <script>
             var css = window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper';
-			document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + css + 
+            document.write( '<link rel="stylesheet" href="reveal.js/css/print/' + css + 
                             '.css" type="text/css" media="print">' );
-		</script>
+        </script>
 
-		<!--[if lt IE 9]>
-		<script src="reveal.js/lib/js/html5shiv.js"></script>
-		<![endif]-->
+        <!--[if lt IE 9]>
+        <script src="reveal.js/lib/js/html5shiv.js"></script>
+        <![endif]-->
 
-		<script src="reveal.js/lib/js/head.min.js"></script>
+        <script src="reveal.js/lib/js/head.min.js"></script>
     <style>
+
 .reveal {
   font-family: 'PT Sans', sans-serif;
 }
@@ -45,66 +40,79 @@
   letter-spacing: normal;
 }
 
+.reveal pre {
+  width: 100%;
+  margin: 0;
+  font-size: 0.7em;
+}
 
+.reveal pre code {
+  margin: 0 auto;
+  max-height: none;
+}
+
+.reveal ul.none {
+  list-style-type: none;
+}
 
     </style>
-	</head>
+    </head>
 
-	<body>
+    <body>
 
-		<div class="reveal">
-			<div class="slides">
+        <div class="reveal">
+            <div class="slides">
 
-				<section>
+                <section>
                     <h1>Example</h1>
                     <h2>This is how it's done</h2>
-				</section>
+                </section>
 
                 <section>
                     <h2></h2>
 
                 </section>
 
-			</div>
-		</div>
+            </div>
+        </div>
 
-		<script src="reveal.js/js/reveal.min.js"></script>
-		<script>
+        <script src="reveal.js/js/reveal.min.js"></script>
+        <script>
 
-			// Full list of configuration options available here:
-			// https://github.com/hakimel/reveal.js#configuration
-			Reveal.initialize({
-				controls:       false,
-				progress:       true,
-				history:        true,
-				center:         true,
+            // Full list of configuration options available here:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls:       false,
+                progress:       true,
+                history:        true,
+                center:         true,
                 rollingLinks:   false,
-				transition:     'zoom', // default/cube/page/concave/zoom/linear/fade/none
-				theme:          'sky',
+                transition:     'zoom', // default/cube/page/concave/zoom/linear/fade/none
+                theme:          'sky',
 
-				dependencies: [
-					{ src: 'reveal.js/lib/js/classList.js',
+                dependencies: [
+                    { src: 'reveal.js/lib/js/classList.js',
                       condition: function() { return !document.body.classList; } },
-					{ src: 'reveal.js/plugin/markdown/marked.js',
+                    { src: 'reveal.js/plugin/markdown/marked.js',
                       condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'reveal.js/plugin/markdown/markdown.js',
+                    { src: 'reveal.js/plugin/markdown/markdown.js',
                       condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-					{ src: 'reveal.js/plugin/highlight/highlight.js', async: true,
+                    { src: 'reveal.js/plugin/highlight/highlight.js', async: true,
                       callback: function() { hljs.initHighlightingOnLoad(); } },
-					{ src: 'reveal.js/plugin/zoom-js/zoom.js', async: true,
+                    { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true,
                       condition: function() { return !!document.body.classList; } },
-					{ src: 'reveal.js/plugin/notes/notes.js', async: true,
+                    { src: 'reveal.js/plugin/notes/notes.js', async: true,
                       condition: function() { return !!document.body.classList; } }
                     /*
-					{ src: 'reveal.js/plugin/search/search.js', async: true,
+                    { src: 'reveal.js/plugin/search/search.js', async: true,
                       condition: function() { return !!document.body.classList; } }
-					{ src: 'reveal.js/plugin/remotes/remotes.js', async: true,
+                    { src: 'reveal.js/plugin/remotes/remotes.js', async: true,
                       condition: function() { return !!document.body.classList; } }
                     */
-				]
-			});
+                ]
+            });
 
-		</script>
+        </script>
 
-	</body>
+    </body>
 </html>
