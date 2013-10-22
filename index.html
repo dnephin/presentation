@@ -131,6 +131,29 @@
 </section>
 
 <section>
+
+  <pre><code class="python">
+ def build_endpoint_node(self, endpoint):
+     section_id = 'service-endpoint-%s' % nodes.make_id(endpoint.call_name)
+     return builders.build_title_section(
+         'service-endpoint',
+         endpoint.call_name,
+         self.nested_parse(endpoint.docstring),
+         builders.build_rest_paragraph(section_id, endpoint.api_spec),
+         builders.build_schema_paragraph(
+             section_id, "Request details", endpoint.api_spec.request_schema),
+         builders.build_schema_paragraph(
+             section_id, "Response details", endpoint.api_spec.response_schema),
+         builders.build_clientlib_section(
+             section_id, self.nested_parse, endpoint),
+         nodes.transition(),
+         nodes.paragraph(),
+         classes=['service-endpoint-wrapper'])
+  </code></pre>
+
+</section>
+
+<section>
   <a href="http://servicedocs/docs/example_service/api/index.html">
     http://servicedocs/docs/example_service/api/index.html</a>
 </section>
