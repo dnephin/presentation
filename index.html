@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
 
-        <title>coffeescript</title>
+        <title>CoffeeScript</title>
 
         <meta name="author" content="Daniel Nephin">
         <link rel="stylesheet" href="reveal.js/css/reveal.min.css">
@@ -34,26 +34,47 @@
   font-family: 'PT Sans', sans-serif;
 }
 
-.reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+.reveal h1 {
   text-transform: none;
-  font-family: 'Monda', sans-serif;
-  letter-spacing: normal;
+  letter-spacing: 0.05em;
+}
+
+#title .subtitle {
+  font-size: 40px;
+  letter-spacing: 0em;
+}
+
+.reveal h2, .reveal h3, .reveal h4 {
+  text-transform: none;
+  font-family: Monda;
+  letter-spacing: 0;
+  font-weight: bold;
 }
 
 .reveal pre {
-  width: 100%;
-  margin: 0;
-  font-size: 0.7em;
+  width: 49%;
+  margin: 0 5px 0 0;
+  font-size: 0.5em;
+  float: left;
 }
 
 .reveal pre code {
   margin: 0 auto;
   max-height: none;
+  min-height: 300px;
+  padding: 0 0.5em 0 1em;
 }
 
 .reveal ul.none {
   list-style-type: none;
 }
+
+
+/* TODO: move to master */
+.reveal blockquote {
+  padding: 1em;
+}
+
 
     </style>
     </head>
@@ -63,15 +84,232 @@
         <div class="reveal">
             <div class="slides">
 
-                <section>
-                    <h1>Example</h1>
-                    <h2>This is how it's done</h2>
-                </section>
+<section id="title">
+<h1>CoffeeScript</h1>
+<h4 class="subtitle">Syntactic sugar has never tasted so sweet!</h4>
+</section>
 
-                <section>
-                    <h2></h2>
+<section>
+  <h2>It's just JavaScript</h2>
 
-                </section>
+  <blockquote>
+    CoffeeScript is an attempt to expose the good parts of JavaScript in a simple way.
+  </blockquote>
+</section>
+
+
+<section>
+  <h2>Functions</h2>
+  <pre><code class="coffeescript">
+product = (x, y) -&gt; x * y
+
+
+
+
+msg = (container, liquid="coffee") -&gt;
+  "Filling the #{container}
+    with #{liquid}."
+  </code></pre>
+
+  <pre><code class="javascript">
+product = function(x, y) {
+  return x * x;
+};
+
+
+msg = function(container, liquid) {
+  if (liquid == null) {
+    liquid = "coffee";
+  }
+  return "Filling the " + container +
+    "with " + liquid + ".";
+};
+  </code></pre>
+
+</section>
+
+
+<section>
+  <h2>Classes</h2>
+  <pre><code class="coffeescript">
+class Model
+  constructor: (@name) ->
+
+  update: (name) =>
+    @name = name
+
+
+class SquareModel
+  constructor: (@name, @size) ->
+
+  update: (name, size) =>
+    super name
+    @size = size
+  </code></pre>
+
+  <pre><code class="javascript">
+Model = (function() { ... })();
+
+SquareModel = (function() {
+  function SquareModel(name, size) {
+    ...
+    this.update = __bind(
+        this.update, this);
+  }
+
+  SquareModel.prototype.update =
+    function(name, size) {
+      SquareModel.__super__.update.call(
+          this, name);
+      return this.size = size;
+  };
+
+  return SquareModel;
+})();
+  </code></pre>
+
+</section>
+
+
+
+<section>
+  <h2>Conditionals</h2>
+  <pre><code class="coffeescript">
+doSomething() if enabled
+
+
+color = if error "red" else "black"
+
+
+log(something) if something?
+  </code></pre>
+
+  <pre><code class="javascript">
+if (enabled) { doSomething(); }
+
+
+color = error ? "red" : "black";
+
+
+if (typeof something !== "undefined" &&
+    something !== null) {
+  log(something);
+}
+  </code></pre>
+
+</section>
+
+
+
+<section>
+  <h2>Splats</h2>
+  <pre><code class="coffeescript">
+log = (msg, count, extra...) ->
+  log("#{msg} #{count} #{extra}")
+
+
+data = ['first', 1, 2, 3, 4, 5]
+
+log(data...)
+
+log('some numbers', data...)
+  </code></pre>
+
+  <pre><code class="javascript">
+log = function() {
+  msg = arguments[0]
+  count = arguments[1]
+  extra = 3 <= arguments.length ?
+      __slice.call(arguments, 2) : [];
+  ...
+};
+
+data = ['first', 1, 2, 3, 4, 5];
+
+log.apply(null, data);
+
+log.apply(null, ['some numbers'].concat(
+    __slice.call(data)));
+
+  </code></pre>
+
+</section>
+
+
+
+<section>
+  <h2>Comprehensions</h2>
+  <pre><code class="coffeescript">
+  </code></pre>
+
+  <pre><code class="javascript">
+  </code></pre>
+
+</section>
+
+
+
+
+<section>
+  <h2>Ranges</h2>
+  <pre><code class="coffeescript">
+  </code></pre>
+
+  <pre><code class="javascript">
+  </code></pre>
+
+</section>
+
+
+
+<section>
+  <h2>Assignment</h2>
+  <pre><code class="coffeescript">
+  </code></pre>
+
+  <pre><code class="javascript">
+  </code></pre>
+
+</section>
+
+
+
+<section>
+  <h2>Literate CoffeeScript</h2>
+  <pre><code class="coffeescript">
+  </code></pre>
+
+  <pre><code class="javascript">
+  </code></pre>
+
+</section>
+
+
+
+<section>
+  <h2></h2>
+  <pre><code class="coffeescript">
+  </code></pre>
+
+  <pre><code class="javascript">
+  </code></pre>
+
+</section>
+
+
+
+
+<section>
+  <h2>Criticisms</h2>
+
+</section>
+
+
+<section>
+  <h2>altjs.org</h2>
+
+</section>
+
 
             </div>
         </div>
@@ -114,6 +352,5 @@
 
         </script>
         <script src="http://localhost:8887/livereload.js"></script>
-
     </body>
 </html>
