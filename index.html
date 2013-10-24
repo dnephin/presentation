@@ -92,7 +92,7 @@
 
 <section id="title">
 <h1>CoffeeScript</h1>
-<h4 class="subtitle">Syntactic sugar has never tasted so sweet!</h4>
+<h4 class="subtitle">Syntactic sugar never tasted so sweet!</h4>
 </section>
 
 <section>
@@ -369,8 +369,8 @@ _ref = [swtch, bait], bait =
 <section>
   <h2>Literate CoffeeScript</h2>
   <pre class="full"><code class="markdown">
-Document goes here at and is not indented. You can write as much as you
-want. Just change the file extension to .litcoffee to the compiler knows
+Documentation goes here and is not indented. You can write as much as you
+want. Just change the file extension to .litcoffee so the compiler knows
 how to read it. It will treat the document as a markdown document. Code
 is indented (like normal markdown).
 
@@ -379,7 +379,8 @@ is indented (like normal markdown).
 
 This is the documentation for the method.
 
-        someMethod () -> ...
+        someMethod: () ->
+            ...
 
   </code></pre>
 </section>
@@ -387,17 +388,38 @@ This is the documentation for the method.
 
 
 <section>
-  <h2>Criticisms</h2>
-  <ul>
-    <li></li>
-    <li></li>
-    <li></li>
-  </ul>
+  <h2>Lexical Scoping</h2>
+  <pre><code class="coffeescript">
+something = "first"
+
+shadow = (value) ->
+    something = value
+
+shadow("second")
+
+log(something)
+# second
+
+  </code></pre>
+
+  <pre><code class="javascript">
+var shadow, something;
+
+something = "first";
+
+shadow = function(value) {
+  return something = value;
+};
+
+shadow("second");
+  </code></pre>
+
+
 </section>
 
 
 <section>
-  <h2>altjs.org</h2>
+  <p><a href="http://coffeescript.org/">coffeescript.org</a></p>
 
 </section>
 
