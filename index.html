@@ -58,6 +58,12 @@
   float: left;
 }
 
+.reveal pre.full {
+  width: 90%;
+  margin: 0 auto;
+  float: none;
+}
+
 .reveal pre code {
   margin: 0 auto;
   max-height: none;
@@ -173,6 +179,41 @@ SquareModel = (function() {
 
 
 <section>
+  <h2>Objects and Lists</h2>
+  <pre><code class="coffeescript">
+[
+  "arrays"
+  "without"
+  "commas"
+]
+
+kids =
+  brother:
+    name: "Max"
+  sister:
+    name: "Ida"
+  </code></pre>
+
+  <pre><code class="javascript">
+["arrays", "without", "commas"];
+
+
+
+kids = {
+  brother: {
+    name: "Max"
+  },
+  sister: {
+    name: "Ida"
+  }
+};
+  </code></pre>
+
+</section>
+
+
+
+<section>
   <h2>Conditionals</h2>
   <pre><code class="coffeescript">
 doSomething() if enabled
@@ -212,7 +253,7 @@ data = ['first', 1, 2, 3, 4, 5]
 
 log(data...)
 
-log('some numbers', data...)
+log('numbers', data...)
   </code></pre>
 
   <pre><code class="javascript">
@@ -228,7 +269,7 @@ data = ['first', 1, 2, 3, 4, 5];
 
 log.apply(null, data);
 
-log.apply(null, ['some numbers'].concat(
+log.apply(null, ['numbers'].concat(
     __slice.call(data)));
 
   </code></pre>
@@ -240,9 +281,31 @@ log.apply(null, ['some numbers'].concat(
 <section>
   <h2>Comprehensions</h2>
   <pre><code class="coffeescript">
+log(msg) for msg in logs when msg.warn
+
+
+
+
+
+newObj = (value for k, value of object)
   </code></pre>
 
   <pre><code class="javascript">
+for (_i = 0, _len = logs.length;
+     _i < _len; _i++) {
+  msg = logs[_i];
+  if (msg.warn) { log(msg); }
+}
+
+newObj = (function() {
+  var _results = [];
+  for (k in object) {
+    value = object[k];
+    _results.push(value);
+  }
+  return _results;
+})();
+
   </code></pre>
 
 </section>
@@ -253,9 +316,23 @@ log.apply(null, ['some numbers'].concat(
 <section>
   <h2>Ranges</h2>
   <pre><code class="coffeescript">
+start   = numbers[0..2]
+
+middle  = numbers[3...6]
+
+end     = numbers[6..]
+
+copy    = numbers[..]
   </code></pre>
 
   <pre><code class="javascript">
+start = numbers.slice(0, 3);
+
+middle = numbers.slice(3, 6);
+
+end = numbers.slice(6);
+
+copy = numbers.slice(0);
   </code></pre>
 
 </section>
@@ -265,9 +342,24 @@ log.apply(null, ['some numbers'].concat(
 <section>
   <h2>Assignment</h2>
   <pre><code class="coffeescript">
+numbers[3..6] = [-3, -4, -5, -6]
+
+
+
+
+
+[bait, swtch] = [swtch, bait]
   </code></pre>
 
   <pre><code class="javascript">
+[].splice.apply(
+    numbers,
+    [3, 4].concat(_r = [-3, -4, -5, -6])
+), _r;
+
+
+_ref = [swtch, bait], bait =
+        _ref[0], swtch = _ref[1];
   </code></pre>
 
 </section>
@@ -276,32 +368,31 @@ log.apply(null, ['some numbers'].concat(
 
 <section>
   <h2>Literate CoffeeScript</h2>
-  <pre><code class="coffeescript">
-  </code></pre>
+  <pre class="full"><code class="markdown">
+Document goes here at and is not indented. You can write as much as you
+want. Just change the file extension to .litcoffee to the compiler knows
+how to read it. It will treat the document as a markdown document. Code
+is indented (like normal markdown).
 
-  <pre><code class="javascript">
-  </code></pre>
+    class Something
 
+
+This is the documentation for the method.
+
+        someMethod () -> ...
+
+  </code></pre>
 </section>
-
-
-
-<section>
-  <h2></h2>
-  <pre><code class="coffeescript">
-  </code></pre>
-
-  <pre><code class="javascript">
-  </code></pre>
-
-</section>
-
 
 
 
 <section>
   <h2>Criticisms</h2>
-
+  <ul>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
 </section>
 
 
