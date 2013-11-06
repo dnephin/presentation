@@ -103,6 +103,13 @@
   </blockquote>
 </section>
 
+<section>
+  <ul>
+    <li>Less clutter</li>
+    <li>More concise</li>
+    <li>Everything is an expression</li>
+  </ul>
+</section>
 
 <section>
   <h2>Functions</h2>
@@ -119,7 +126,7 @@ msg = (container, liquid="coffee") -&gt;
 
   <pre><code class="javascript">
 product = function(x, y) {
-  return x * x;
+  return x * y;
 };
 
 
@@ -219,7 +226,7 @@ kids = {
 doSomething() if enabled
 
 
-color = if error "red" else "black"
+color = if error then "red" else "black"
 
 
 log(something) if something?
@@ -246,7 +253,7 @@ if (typeof something !== "undefined" &&
   <h2>Splats</h2>
   <pre><code class="coffeescript">
 log = (msg, count, extra...) ->
-  log("#{msg} #{count} #{extra}")
+  emit("#{msg} #{count} #{extra}")
 
 
 data = ['first', 1, 2, 3, 4, 5]
@@ -464,6 +471,6 @@ shadow("second");
             });
 
         </script>
-<!--        <script src="http://localhost:8887/livereload.js"></script> -->
+        <script src="http://localhost:8887/livereload.js"></script>
     </body>
 </html>
