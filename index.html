@@ -59,6 +59,17 @@
   list-style-type: none;
 }
 
+.reveal .question {
+  text-shadow: 0 1px 0 #cccccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbbbbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaaaaa, 0 6px 1px rgba(0, 0, 0, 0.1), 0 0 5px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.3), 0 3px 5px rgba(0, 0, 0, 0.2), 0 5px 10px rgba(0, 0, 0, 0.25), 0 20px 20px rgba(0, 0, 0, 0.15);
+  font-size: 3em;
+}
+
+.reveal p.filename {
+  color: #777;
+  text-align: left;
+  margin-left: 0.5em;
+}
+
     </style>
     </head>
 
@@ -73,33 +84,106 @@
 </section>
 
 <section>
-  <h2>Why?</h2>
+  <section>
+    <h3 class="question">Why?</h3>
+  </section>
+
+  <section>
+    <p class="filename">config.py</a>
+    <pre><code class="python">
+  mysql_host = "10.10.10.1"
+  mysql_port = 3306
+
+  max_retry = 3
+  default_date_fmt = "%Y-%m-%d"
+    </code></pre>
+  </section>
+
+  <section>
+    <p class="filename">config.xml</a>
+    <pre><code class="xml">
+  <config>
+    <mysql>
+      <param name="host" type="string">10.10.10.1&lt;/param>
+      <param name="port" type="int">330&lt;/param>
+    </mysql>
+    <webservice>
+      <param name="max_retry" type="int">3&lt;/param>
+    </webservice>
+    <locale>
+      <param name="default_date_fmt" type="string">
+          %Y-%m-%d&lt;/param>
+    </locale>
+  </config>
+   </code></pre>
+
+  </section>
+  <section>
+    <p class="filename">config.yaml</a>
+    <pre><code class="yaml">
+  mysql:
+    host: "10.10.10.1"
+    port: 3306
+  web_services:
+    max_retry: 3
+  locale:
+    default_date_fmt: "%Y-%m-%d"
+   </code></pre>
+  </section>
+
+</section>
+
+
+<section>
+  <h3>Goals</h3>
   <ul>
-    <li></li>
-    <li></li>
-    <li></li>
+    <li>support many file formats
+      <ul>
+        <li>separate configuration loading from configuration reading</li>
+      </ul>
+    </li>
+    <li>create tools for working with configuration
+      <ul>
+        <li>remove the need for heavily nested dicts</li>
+        <li>configuration validation</li>
+        <li>periodically reload configuration when files change</li>
+      </ul> 
+    </li>
+    <li>easily extensible</li>
   </ul>
 </section>
 
 
 <section>
-  <h2>Why?</h2>
+  <h2>Loading Configuration</h2>
   <ul>
     <li></li>
     <li></li>
-    <li></li>
   </ul>
+  <pre><code class="python">
+  </code></pre>
 </section>
 
 
 <section>
-  <h2>Goals</h2>
+  <h2>Loading</h2>
   <ul>
     <li></li>
     <li></li>
-    <li></li>
   </ul>
+  <pre><code class="python">
+  </code></pre>
 </section>
+
+<!--
+ - consistent format
+ - functional composition over inheritance
+ - unit tests
+ - proxying objects
+ - readers
+ - schemas
+ - config reloading
+-->
 
 
 <section>
