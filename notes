@@ -1,0 +1,14 @@
+
+
+context - why such a thing might be necessary
+qualities - what I was looking for
+search - what i found
+loading - reading different formats, separate load from read
+        - tradeoffs (flatten nested)
+proxy - metaclasses and faking types (and when it doesn't work)
+readers - a more obvious approach
+schemas - a more structuered approach
+composition - code structure without inheritence
+reloading - how it works
+testing - MockConfig , test coverage 
+

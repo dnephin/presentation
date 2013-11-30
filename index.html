@@ -59,8 +59,19 @@
   list-style-type: none;
 }
 
-.reveal .question {
-  text-shadow: 0 1px 0 #cccccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbbbbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaaaaa, 0 6px 1px rgba(0, 0, 0, 0.1), 0 0 5px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.3), 0 3px 5px rgba(0, 0, 0, 0.2), 0 5px 10px rgba(0, 0, 0, 0.25), 0 20px 20px rgba(0, 0, 0, 0.15);
+.reveal h3.question,
+.reveal h3.title {
+  text-shadow: 0 1px 0 #cccccc,
+    0 2px 0 #c9c9c9,
+    0 3px 0 #bbbbbb,
+    0 4px 0 #b9b9b9,
+    0 5px 0 #aaaaaa,
+    0 6px 1px rgba(0, 0, 0, 0.1),
+    0 0 5px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    0 3px 5px rgba(0, 0, 0, 0.2),
+    0 5px 10px rgba(0, 0, 0, 0.25),
+    0 20px 20px rgba(0, 0, 0, 0.15);
   font-size: 3em;
 }
 
@@ -82,6 +93,27 @@
     <h1>staticconf</h1>
     <h2>An open source python library for configuration</h2>
 </section>
+
+<!-- intro
+
+ Things I'd like to talk about:
+
+  - What staticconf does
+  - How it does it
+  - It's design (no inheritence)
+  - test coverage
+
+
+  - allowed me to explore interesting parts of python
+    - type system
+    - special attributes
+    - metaclasses
+    - decorators
+    - descriptors
+    - slots
+    - weakref
+
+-->
 
 <section>
   <section>
@@ -176,13 +208,6 @@
 </section>
 
 <!--
- - consistent format
- - functional composition over inheritance
- - unit tests
- - proxying objects
- - readers
- - schemas
- - config reloading
 -->
 
 
