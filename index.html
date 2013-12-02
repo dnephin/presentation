@@ -117,19 +117,6 @@
     <h2>An open source python library for configuration</h2>
 </section>
 
-<!--
-
-  - allowed me to explore interesting parts of python
-    - type system
-    - special attributes
-    - metaclasses
-    - decorators
-    - descriptors
-    - slots
-    - weakref
-
--->
-
 <section>
   <section>
     <h3 class="question">Why?</h3>
@@ -179,7 +166,6 @@
   </section>
 
 </section>
-
 
 <section>
   <section>
@@ -529,7 +515,7 @@
   def validate_regex(value):
       try:
           return re.compile(value)
-      except (re.error, TypeError), e:
+      except (re.error, TypeError) as e:
           raise ValidationError(...)
   
   def validate_log_level(value):
@@ -596,9 +582,8 @@
     <pre><code class="python">
   import staticconf
 
-  for id in staticconf.read_int('max_iterations', default=10):
-      ...
-
+  max_iterations = staticconf.read_int('max_iterations',
+                                       default=10)
 
   print "Running until {0}".format(
       staticconf.read_datetime('end_time'))
@@ -627,86 +612,179 @@
 
   <section>
     <p class="left">Building from validators, without the boilerplate</p>
-    <pre class="smaller"><code class="python">
+    <pre><code class="python">
   def build_reader(validator, ...):
-      def reader(config_key, default=UndefToken, namespace=None):
+      def reader(config_key,
+                 default=UndefToken,
+                 namespace=None):
+
           config_namespace = config.get_namespace(namespace)
-          return validator(
-              _read_config(config_key, config_namespace, default))
+          return validator(_read_config(config_key,
+                                        config_namespace,
+                                        default))
       return reader
-  
-  
-  class ReaderNameFactory(object):
-      """Factory used to create the NamespaceReaders object."""
-  
-      @staticmethod
-      def get_name(name):
-          return 'read_%s' % name if name else 'read'
-  
-      @staticmethod
-      def get_list_of_name(name):
-          return 'read_list_of_%s' % name
-  
-  
-  def get_all_accessors(name_factory):
-      for name, validator in validation.get_validators():
-          yield name_factory.get_name(name), validator
-          yield (name_factory.get_list_of_name(name),
-                 validation.build_list_type_validator(validator))
-  
-  
-  class NamespaceAccessor(object):
-  
-      def __init__(self, name, accessor_map, builder):
-          self.accessor_map       = accessor_map
-          self.builder            = builder
-          self.namespace          = name
-  
-      def __getattr__(self, item):
-          if item not in self.accessor_map:
-              raise AttributeError(item)
-          return self.builder(self.accessor_map[item], self.namespace)
-  
-      def get_methods(self):
-          return dict((name, getattr(self, name)) for name in self.accessor_map)
-  
-  
+
+  # Put it all together
   def build_accessor_type(name_factory, builder):
       accessor_map = dict(get_all_accessors(name_factory))
-      return lambda name: NamespaceAccessor(name, accessor_map, builder)
+      return lambda name: \
+          NamespaceAccessor(name, accessor_map, builder)
     </code></pre>
   </section>
-
-  <section>
-    <p class="left"></p>
-    <pre><code class="python">
-    </code></pre>
-  </section>
-
-  <section>
-    <p class="left"></p>
-    <pre><code class="python">
-    </code></pre>
-  </section>
-
-  <section>
-  <ul>
-    <li></li>
-    <li></li>
-  </ul>
-  <pre><code class="python">
-  </code></pre>
 </section>
-</section>
-
 
 <section>
-    <h2>References</h2>
-    <ul>
-      <li><a href="https://github.com/dnephin/PyStaticConfiguration">github</a></li>
-      <li><a href="https://pypi.python.org/pypi/PyStaticConfiguration">pypi</a></li>
-      <li><a href="http://pythonhosted.org/PyStaticConfiguration/">docs</a></li>
+  <section>
+    <h3>Schemas</h3>
+    <p>Grouping similar things together is nice</p>
+  </section>
+
+  <section>
+    <p class="left">Example configuration schema</p>
+    <pre><code class="python">
+  class MyConfigSchema(object):
+      __metaclass__ = schema.SchemaMeta
+
+      namespace = 'my_package'
+
+      # (optional) config path to prepend to keys
+      config_path = 'my_class.foo'
+
+
+      # configured at my_class.foo.ratio
+      ratio = schema.float(default=0.2)
+
+      # configured at my_class.foo.max
+      max_threshold = schema.int(config_key='max')
+
+
+  config = MyConfigSchema()
+  print config.ratio
+    </code></pre>
+  </section>
+
+  <section>
+    <p class="left">Build your own...</p>
+    <pre><code class="python">
+    from staticconf import schema
+
+    validator = ...
+    custom_type = schema.build_value_type(validator)
+
+
+    class MySchema(object):
+        __metaclass__ = schema.SchemaMeta
+
+        something = custom_type(default=...)
+    </code></pre>
+  </section>
+</section>
+
+<section>
+  <section>
+    <h3>Reloading</h3>
+    <p>Configuration can change</p>
+    <ul class="spaced">
+      <li>long running processes should be able to pick up configuration changes</li>
+      <li>program structure shouldn't need to change</li>
+      <li>reloading the entire file can be expensive</li>
     </ul>
+  </section>
+
+  <section>
+    <p class="left">Testing for modified files</p>
+    <pre><code class="python">
+ # Only check for modifications once ever min_interval
+ def should_check(self):
+     return self.last_check + self.min_interval &lt;= time.time()
+
+ # Get the most recent modified time
+ def most_recent_changed(self):
+     return max(os.path.getmtime(name)
+                for name in self.filenames)
+
+ # Get the inode and device id of files
+ def get_inodes(self):
+     def get_inode(stbuf):
+         return stbuf.st_dev, stbuf.st_ino
+     return [get_inode(os.stat(filename))
+             for filename in self.filenames]
+    </code></pre>
+  </section>
+
+  <section>
+    <p class="left">ConfigurationWatcher</p>
+    <pre><code class="python">
+ class ConfigurationWatcher(object):
+ 
+     def __init__(self,
+                  config_loader,
+                  filenames,
+                  min_interval=0,
+                  reloader=None):
+         ...
+ 
+     def reload_if_changed(self, force=False):
+         if (force or self.should_check) \
+                 and self.file_modified():
+             return self.reload()
+    </code></pre>
+  </section>
+
+  <section>
+    <p class="left">Composing configuration loaders</p>
+    <pre><code class="python">
+
+  def load(filenames):
+      for name in filenames:
+          YamlConfiguration(name)
+
+  watcher = ConfigurationWatcher(load, filenames)
+  watcher.load_config()
+  ...
+
+  for work in work_items:
+      watcher.reload_if_changed()
+      ...
+    </code></pre>
+  </section>
+</section>
+
+<section>
+  <section>
+    <h3>Finally</h3>
+    <ul class="spaced">
+      <li>classes and types</li>
+      <li>special attributes</li>
+      <li>metaclasses</li>
+      <li>decorators</li>
+      <li>descriptors</li>
+      <li>slots</li>
+      <li>weakref</li>
+    </ul>
+  </section>
+
+  <section>
+    <h3>Also...</h3>
+    <ul class="spaced">
+      <li>unit tests</li>
+      <li>acceptance tests</li>
+      <li>composition, no inheritance</li>
+      <li>sphinx documentation</li>
+    </ul>
+  </section>
+
+  <section>
+      <h3>References</h3>
+      <ul>
+        <li><a href="https://github.com/dnephin/PyStaticConfiguration">
+            github.com/dnephin/PyStaticConfiguration</a></li>
+        <li><a href="https://pypi.python.org/pypi/PyStaticConfiguration">
+            pypi.org/pypi/PyStaticConfiguration</a></li>
+        <li><a href="http://pythonhosted.org/PyStaticConfiguration/">
+            pythonhosted.org/PyStaticConfiguration</a></li>
+      </ul>
+  </section>
 </section>
 
             </div>
