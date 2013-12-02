@@ -81,6 +81,29 @@
   margin-left: 0.5em;
 }
 
+.left {
+  text-align: left;
+  width: 100%;
+}
+
+.reveal .padded {
+  margin: 1em 0 0.5em 0;
+}
+
+.reveal ul.spaced li {
+  margin: 0.5em 0 0 0;
+}
+
+.reveal pre.smaller {
+  font-size: 0.6em;
+}
+
+/* TODO: upstream */
+.reveal .slides>section,
+.reveal .slides > section > section {
+  padding: 0;
+}
+
     </style>
     </head>
 
@@ -94,15 +117,7 @@
     <h2>An open source python library for configuration</h2>
 </section>
 
-<!-- intro
-
- Things I'd like to talk about:
-
-  - What staticconf does
-  - How it does it
-  - It's design (no inheritence)
-  - test coverage
-
+<!--
 
   - allowed me to explore interesting parts of python
     - type system
@@ -167,27 +182,514 @@
 
 
 <section>
-  <h3>Goals</h3>
-  <ul>
-    <li>support many file formats
+  <section>
+  <h3>Requirements</h3>
+  <ul class="spaced left">
+    <li>support loading config from different file formats</li>
+    <li>tools for working with configuration
       <ul>
-        <li>separate configuration loading from configuration reading</li>
-      </ul>
-    </li>
-    <li>create tools for working with configuration
-      <ul>
-        <li>remove the need for heavily nested dicts</li>
+        <li>support structured configuration without heavily nested dicts</li>
         <li>configuration validation</li>
-        <li>periodically reload configuration when files change</li>
+        <li>periodically reload configuration</li>
       </ul> 
     </li>
     <li>easily extensible</li>
   </ul>
+  </section>
+
+  <section>
+    <h3>Options?</h3>
+    <ul>
+      <li><a href="http://docs.python.org/library/configparser.html">ConfigParser</a> in stdlib</li>
+      <li><a href="https://pypi.python.org/pypi/ZConfig">ZConfig</a> from zope</li>
+      <li><a href="http://pythonhosted.org/ConfigObject/">ConfigObject</a></li>
+    </ul>
+
+  </section>
 </section>
 
+<section>
+  <section>
+    <h3>Getting started - Loading</h3>
+
+    <p class="left padded">Support many configuration file formats</p>
+    <ul class="left spaced">
+        <li>separate configuration loading from configuration reading</li>
+        <li>lots of common code shared between the different loaders</li>
+        <li>trade-off: flatten nested structures vs preserve nesting</li>
+    </ul>
+  </section>
+
+  <section>
+    <h3>Configuration object</h3>
+    <pre><code class="python">
+ class ConfigNamespace(object):
+    def __init__(self, name):
+        self.configuration_values = {}
+
+    def apply_config_data(self,
+            config_data, error_on_unknown, error_on_dupe):
+        self.validate_keys(config_data, error_on_unknown)
+        self.has_duplicate_keys(config_data, error_on_dupe)
+        self.update_values(config_data)
+
+    def get(self, item, default=None):
+        ...
+    def __getitem__(self, item):
+        ...
+    def __setitem__(self, key, value):
+        ...
+    def __contains__(self, item):
+        ...
+    </code></pre>
+  </section>
+
+  <section>
+  <p class="left">Build a configuration loading function</p>
+  <pre><code class="python">
+  def build_loader(loader_func):
+
+      def loader(*args, **kwargs):
+          ...
+          # Call the loader_func that was passed in
+          config_data = load_config_data(
+                          loader_func, *args, **kwargs)
+
+          # Flatten the nested structure
+          config_data = dict(flatten_dict(config_data))
+
+          # Load it into a ConfigNamespace object
+          namespace   = config.get_namespace(name)
+          namespace.apply_config_data(config_data, ...)
+  
+      return loader
+  </code></pre>
+  </section>
+
+  <section>
+  <p class="left">Sample configuration loader functions</p>
+  <pre><code class="python">
+  def json_loader(filename):
+      with open(filename) as fh:
+          return json.load(fh)
+   
+  def python_loader(module_name):
+      module = __import__(module_name, fromlist=['*'])
+      return object_loader(module)
+  
+  def ini_file_loader(filename):
+      parser = ConfigParser.SafeConfigParser()
+      parser.read([filename])
+      config_dict = {}
+  
+      for section in parser.sections():
+          for key, value in parser.items(section, True):
+              config_dict['%s.%s' % (section, key)] = value
+  
+      return config_dict
+  </code></pre>
+  </section>
+
+  <section>
+  <p class="left">Build some default loaders for different file formats</p>
+  <pre><code class="python">
+  YamlConfiguration       = build_loader(yaml_loader)
+  JSONConfiguration       = build_loader(json_loader)
+  ListConfiguration       = build_loader(list_loader)
+  DictConfiguration       = build_loader(lambda d: d)
+  ObjectConfiguration     = build_loader(object_loader)
+  PythonConfiguration     = build_loader(python_loader)
+  INIConfiguration        = build_loader(ini_file_loader)
+  XMLConfiguration        = build_loader(xml_loader)
+  PropertiesConfiguration = build_loader(properties_loader)
+  </code></pre>
+  </section>
+
+  <section>
+  <p class="left">Heterogeneous sources</p>
+  <pre><code class="python">
+  # Load system defaults
+  INIConfiguration('/etc/coolapp/config.ini')
+
+  # Load user defaults
+  YamlCofiguration('/home/user/.coolapp.yaml')
+
+  # Load overrides from os.environ
+  env_config = dict((k, v) for k, v os.environ.iteritems()
+                    if  k.startswith('coolapp'))
+  DictConfiguration(env_config)
+
+  # Load overrides from optparse
+  # parser.add_option('--conf-value', action='append')
+  ListConfiguration(opt.conf_value)
+  </code></pre>
+  </section>
+
+  <section>
+  <p class="left">Build your own</p>
+  <pre><code class="python">
+  import requests
+  from staticconf.loader import build_loader
+
+  def remote_config_loader(url, auth=None):
+     return requests.get(url, auth=auth).json()
+
+  RemoteConfiguration = build_loader(remote_config_loader)
+  ...
+
+  RemoteConfiguration('http://example.com/config/current')
+  </code></pre>
+  </section>
+
+  <section>
+  <p class="left">The trade-off: flatten everything</p>
+  <p class="filename">flat</p>
+  <pre><code class="python">
+  table.max_rows = 10
+  table.strategy.name = 'alternate'
+  table.strategy.rate = 3
+  </code></pre>
+  <p class="filename">nested</p>
+  <pre><code class="python">
+  {
+      'table': {
+          'max_rows': 10,
+          'strategy': {
+              'name': 'alternate',
+              'rate': 3
+           }
+      }
+  }
+  </code></pre>
+  </section>
+
+</section>
 
 <section>
-  <h2>Loading Configuration</h2>
+  <section>
+    <h3>Next - Getting Values</h3>
+    <p class="left">Retrieve a value from a ConfigNamespace</p>
+    <ul class="left spaced">
+      <li>validate type of the value</li>
+      <li>cache expensive casting operations</li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="left">Magical proxies</p>
+    <pre><code class="python">
+  value = staticconf.get_int('something', default=3)
+
+  print range(value)
+  # [0, 1, 2]
+
+  print "abcdefg"[:value]
+  # "abc"
+
+  print 2 &lt; value &lt; 4
+  # True
+
+  print value == 3
+  # True
+
+  print type(value)
+  # staticconf.proxy.ValueProxy
+    </code></pre>
+  </section>
+
+  <section>
+    <p class="left">What is a ValueProxy?</p>
+    <pre><code class="python">
+  class ValueProxy(object):
+      __slots__ = [ ..., '__weakref__']
+   
+      def __new__(cls, *args, **kwargs):
+          klass = build_class_def(cls)
+          instance = object.__new__(klass)
+          klass.__init__(instance, *args, **kwargs)
+          return instance
+  
+      def __init__(self,
+              validator, namespace, key, default=UndefToken):
+          ...
+  
+      @property
+      @cache_as_field('_value')
+      def value(self):
+          return extract_value(self)
+    </code></pre>
+  </section>
+
+  <section>
+    <p class="left">Fake being every class</p>
+    <pre><code class="python">
+  def build_class_def(cls):
+      def build_method(name):
+          ...
+          return method
+  
+      contents = dict((name, build_method(name))
+                      for name in _special_names)
+      return type(cls.__name__, (cls,), contents)
+
+  # method() extracted from above for clarity
+  def method(self, *args, **kwargs):
+      if name in unary_funcs:
+          return unary_funcs[name](self.value)
+
+      if hasattr(operator, name):
+          return getattr(operator, name)(self.value, *args)
+  
+      return getattr(self.value, name)(*args, **kwargs)
+    </code></pre>
+  </section>
+
+  <section>
+    <p class="left">The special methods</p>
+    <pre class="smaller"><code class="python">
+'__abs__', '__add__', '__and__', '__call__', '__cmp__', '__coerce__',
+'__contains__', '__delitem__', '__delslice__', '__div__', '__divmod__',
+'__eq__', '__float__', '__floordiv__', '__ge__', '__getitem__',
+'__getslice__', '__gt__', '__hash__', '__hex__', '__iadd__',
+'__idiv__', '__idivmod__', '__ifloordiv__', '__ilshift__', '__imod__',
+'__imul__', '__int__', '__invert__', '__ior__', '__ipow__',
+'__isub__', '__iter__', '__itruediv__', '__ixor__', '__le__',
+'__long__', '__lshift__', '__lt__', '__mod__', '__mul__', '__ne__',
+'__neg__', '__oct__', '__or__', '__pos__', '__pow__', '__radd__',
+'__rand__', '__rdiv__', '__rdivmod__', '__reduce__', '__reduce_ex__',
+'__repr__', '__reversed__', '__rfloorfiv__', '__rlshift__', '__rmod__',
+'__rmul__', '__ror__', '__rpow__', '__rrshift__', '__rshift__',
+'__rtruediv__', '__rxor__', '__setitem__', '__setslice__', '__sub__',
+'__truediv__', '__xor__', 'next', '__nonzero__', '__str__',
+'__index__', '__irshift__', '__rsub__', '__unicode__', '__iand__',
+'__len__',
+    </code></pre>
+  </section>
+</section>
+
+<section>
+  <section>
+    <h3>Validators</h3>
+    <ul class="spaced">
+      <li>configuration formats don't support all types (ex: dates)</li>
+      <li>casting things to the type you want can be tedious</li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="left">Common validators</p>
+    <pre><code class="python">
+  def validate_numeric(type_func, value):
+      try:
+          return type_func(value)
+      except ValueError:
+          raise ValidationError(...)
+
+  def validate_int(value):
+      return validate_numeric(int, value)
+
+  # Some supported date formats
+  date_formats = ["%Y-%m-%d %H:%M:%S", ... ]
+  
+  def validate_datetime(value):
+      for format in date_formats:
+          try:
+              return datetime.datetime.strptime(value, format)
+          except ValueError:
+              pass
+      raise ValidationError("Invalid date format: %s" % value)
+  
+    </code></pre>
+  </section>
+
+  <section>
+    <p class="left">Validator composition</p>
+    <pre><code class="python">
+  def build_list_type_validator(item_validator):
+
+      def validate_list_of_type(value):
+          return [item_validator(item)
+                  for item in validate_list(value)]
+
+      return validate_list_of_type
+
+
+  # Compose a previous validator
+  validate_list_of_ints = \
+      build_list_type_validator(validate_int)
+    </code></pre>
+  </section>
+
+  <section>
+    <p class="left">More interesting validators</p>
+    <pre><code class="python">
+  def validate_set(value):
+      return _validate_iterable(set, value)
+  
+  def validate_regex(value):
+      try:
+          return re.compile(value)
+      except (re.error, TypeError), e:
+          raise ValidationError(...)
+  
+  def validate_log_level(value):
+      try:
+          return getattr(logging, value)
+      except AttributeError:
+          raise ValidationError(...)
+    </code></pre>
+  </section>
+
+
+  <section>
+    <p class="left">Enumerate some common validators</p>
+    <pre><code class="python">
+   validators = {
+      '':          validate_any,
+      'bool':      validate_bool,
+      'date':      validate_date,
+      'datetime':  validate_datetime,
+      'float':     validate_float,
+      'int':       validate_int,
+      'list':      validate_list,
+      'set':       validate_set,
+      'string':    validate_string,
+      'time':      validate_time,
+      'tuple':     validate_tuple,
+      'regex':     validate_regex,
+      'log_level': validate_log_level,
+   }
+    </code></pre>
+  </section>
+
+  <section>
+    <p class="left">Build your own</p>
+    <pre><code class="python">
+  HostConfig = namedtuple('HostConfig', 'host port timeout')
+
+  def validate_something(input):
+      try:
+          host, port, timeout = validate_tuple(input)
+          return HostConfig(validate_string(host),
+                            validate_int(port),
+                            validate_timeout(timeout))
+      except ValueError as e:
+          raise ValidationError(
+              "Not a valid host config: {0}, {1}"...)
+    </code></pre>
+    </section>
+
+</section>
+
+<section>
+  <section>
+    <h3>Back to reading values</h3>
+    <p class="left padded">Readers: a more obvious approach</p>
+    <ul class="left spaced">
+      <li>use validators to get the correct type</li>
+      <li>no proxy, no caching</li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="left">Reading from the default ConfigNamespace</p>
+    <pre><code class="python">
+  import staticconf
+
+  for id in staticconf.read_int('max_iterations', default=10):
+      ...
+
+
+  print "Running until {0}".format(
+      staticconf.read_datetime('end_time'))
+
+
+  logging.getLogger().setLevel(
+      staticconf.read_log_level('default_log_level'))
+    </code></pre>
+  </section>
+
+  <section>
+    <p class="left">Reading from a named ConfigNamespace</p>
+    <pre><code class="python">
+  import staticconf
+
+  connect_timeout = staticconf.read_int(hostname,
+                                        namespace='timesouts')
+
+  ...
+
+  timeout_config = staticconf.NamespaceReader('timeouts')
+
+  connect_timeout = timeout_config.read_int(hostname)
+    </code></pre>
+  </section>
+
+  <section>
+    <p class="left">Building from validators, without the boilerplate</p>
+    <pre class="smaller"><code class="python">
+  def build_reader(validator, ...):
+      def reader(config_key, default=UndefToken, namespace=None):
+          config_namespace = config.get_namespace(namespace)
+          return validator(
+              _read_config(config_key, config_namespace, default))
+      return reader
+  
+  
+  class ReaderNameFactory(object):
+      """Factory used to create the NamespaceReaders object."""
+  
+      @staticmethod
+      def get_name(name):
+          return 'read_%s' % name if name else 'read'
+  
+      @staticmethod
+      def get_list_of_name(name):
+          return 'read_list_of_%s' % name
+  
+  
+  def get_all_accessors(name_factory):
+      for name, validator in validation.get_validators():
+          yield name_factory.get_name(name), validator
+          yield (name_factory.get_list_of_name(name),
+                 validation.build_list_type_validator(validator))
+  
+  
+  class NamespaceAccessor(object):
+  
+      def __init__(self, name, accessor_map, builder):
+          self.accessor_map       = accessor_map
+          self.builder            = builder
+          self.namespace          = name
+  
+      def __getattr__(self, item):
+          if item not in self.accessor_map:
+              raise AttributeError(item)
+          return self.builder(self.accessor_map[item], self.namespace)
+  
+      def get_methods(self):
+          return dict((name, getattr(self, name)) for name in self.accessor_map)
+  
+  
+  def build_accessor_type(name_factory, builder):
+      accessor_map = dict(get_all_accessors(name_factory))
+      return lambda name: NamespaceAccessor(name, accessor_map, builder)
+    </code></pre>
+  </section>
+
+  <section>
+    <p class="left"></p>
+    <pre><code class="python">
+    </code></pre>
+  </section>
+
+  <section>
+    <p class="left"></p>
+    <pre><code class="python">
+    </code></pre>
+  </section>
+
+  <section>
   <ul>
     <li></li>
     <li></li>
@@ -195,20 +697,7 @@
   <pre><code class="python">
   </code></pre>
 </section>
-
-
-<section>
-  <h2>Loading</h2>
-  <ul>
-    <li></li>
-    <li></li>
-  </ul>
-  <pre><code class="python">
-  </code></pre>
 </section>
-
-<!--
--->
 
 
 <section>
