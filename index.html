@@ -207,6 +207,30 @@
   </section>
 
   <section>
+  <p class="left">The trade-off: flatten everything</p>
+  <p class="filename">flat</p>
+  <pre><code class="python">
+  {
+      'table.max_rows': 10,
+      'table.strategy.name': 'alternate',
+      'table.strategy.rate': 3
+  }
+  </code></pre>
+  <p class="filename">nested</p>
+  <pre><code class="python">
+  {
+      'table': {
+          'max_rows': 10,
+          'strategy': {
+              'name': 'alternate',
+              'rate': 3
+           }
+      }
+  }
+  </code></pre>
+  </section>
+
+  <section>
     <h3>Configuration object</h3>
     <pre><code class="python">
  class ConfigNamespace(object):
@@ -292,26 +316,6 @@
   </section>
 
   <section>
-  <p class="left">Heterogeneous sources</p>
-  <pre><code class="python">
-  # Load system defaults
-  INIConfiguration('/etc/coolapp/config.ini')
-
-  # Load user defaults
-  YamlCofiguration('/home/user/.coolapp.yaml')
-
-  # Load overrides from os.environ
-  env_config = dict((k, v) for k, v os.environ.iteritems()
-                    if  k.startswith('coolapp'))
-  DictConfiguration(env_config)
-
-  # Load overrides from optparse
-  # parser.add_option('--conf-value', action='append')
-  ListConfiguration(opt.conf_value)
-  </code></pre>
-  </section>
-
-  <section>
   <p class="left">Build your own</p>
   <pre><code class="python">
   import requests
@@ -328,24 +332,22 @@
   </section>
 
   <section>
-  <p class="left">The trade-off: flatten everything</p>
-  <p class="filename">flat</p>
+  <p class="left">Heterogeneous sources</p>
   <pre><code class="python">
-  table.max_rows = 10
-  table.strategy.name = 'alternate'
-  table.strategy.rate = 3
-  </code></pre>
-  <p class="filename">nested</p>
-  <pre><code class="python">
-  {
-      'table': {
-          'max_rows': 10,
-          'strategy': {
-              'name': 'alternate',
-              'rate': 3
-           }
-      }
-  }
+  # Load system defaults
+  INIConfiguration('/etc/coolapp/config.ini')
+
+  # Load user defaults
+  YamlCofiguration('/home/user/.coolapp.yaml')
+
+  # Load overrides from os.environ
+  env_config = dict((k, v) for k, v os.environ.iteritems()
+                    if  k.startswith('coolapp'))
+  DictConfiguration(env_config)
+
+  # Load overrides from optparse
+  # parser.add_option('--conf-value', action='append')
+  ListConfiguration(opt.conf_value)
   </code></pre>
   </section>
 
@@ -410,13 +412,12 @@
     <p class="left">Fake being every class</p>
     <pre><code class="python">
   def build_class_def(cls):
-      def build_method(name):
-          ...
-          return method
+      ...
   
       contents = dict((name, build_method(name))
                       for name in _special_names)
       return type(cls.__name__, (cls,), contents)
+
 
   # method() extracted from above for clarity
   def method(self, *args, **kwargs):
@@ -432,23 +433,21 @@
 
   <section>
     <p class="left">The special methods</p>
-    <pre class="smaller"><code class="python">
-'__abs__', '__add__', '__and__', '__call__', '__cmp__', '__coerce__',
-'__contains__', '__delitem__', '__delslice__', '__div__', '__divmod__',
-'__eq__', '__float__', '__floordiv__', '__ge__', '__getitem__',
-'__getslice__', '__gt__', '__hash__', '__hex__', '__iadd__',
-'__idiv__', '__idivmod__', '__ifloordiv__', '__ilshift__', '__imod__',
-'__imul__', '__int__', '__invert__', '__ior__', '__ipow__',
-'__isub__', '__iter__', '__itruediv__', '__ixor__', '__le__',
-'__long__', '__lshift__', '__lt__', '__mod__', '__mul__', '__ne__',
-'__neg__', '__oct__', '__or__', '__pos__', '__pow__', '__radd__',
-'__rand__', '__rdiv__', '__rdivmod__', '__reduce__', '__reduce_ex__',
-'__repr__', '__reversed__', '__rfloorfiv__', '__rlshift__', '__rmod__',
-'__rmul__', '__ror__', '__rpow__', '__rrshift__', '__rshift__',
-'__rtruediv__', '__rxor__', '__setitem__', '__setslice__', '__sub__',
-'__truediv__', '__xor__', 'next', '__nonzero__', '__str__',
-'__index__', '__irshift__', '__rsub__', '__unicode__', '__iand__',
-'__len__',
+    <pre><code class="python">
+'__abs__',      '__add__',      '__and__',      '__call__',
+'__contains__', '__delitem__',  '__delslice__', '__div__',
+'__eq__',       '__float__',    '__floordiv__', '__ge__',
+'__getitem__',  '__gt__',       '__hash__',     '__hex__',
+'__imul__',     '__int__',      '__invert__',   '__ior__',
+'__long__',     '__lshift__',   '__lt__',       '__mod__',
+'__mul__',      '__ne__',       '__neg__',      '__oct__',
+'__or__',       '__pos__',      '__pow__',      '__radd__',
+'__rand__',     '__rdiv__',     '__rdivmod__',  '__reduce__',
+'__repr__',     '__reversed__', '__rlshift__',  '__setitem__',
+'__setslice__', '__sub__',      '__truediv__',  '__xor__',
+'next',         '__nonzero__',  '__str__',      '__index__',
+'__irshift__',  '__rsub__',     '__unicode__',  '__iand__',
+'__len__',      '__divmod__',   '__rmod__',     ...
     </code></pre>
   </section>
 </section>
@@ -489,24 +488,6 @@
   </section>
 
   <section>
-    <p class="left">Validator composition</p>
-    <pre><code class="python">
-  def build_list_type_validator(item_validator):
-
-      def validate_list_of_type(value):
-          return [item_validator(item)
-                  for item in validate_list(value)]
-
-      return validate_list_of_type
-
-
-  # Compose a previous validator
-  validate_list_of_ints = \
-      build_list_type_validator(validate_int)
-    </code></pre>
-  </section>
-
-  <section>
     <p class="left">More interesting validators</p>
     <pre><code class="python">
   def validate_set(value):
@@ -526,6 +507,23 @@
     </code></pre>
   </section>
 
+  <section>
+    <p class="left">Validator composition</p>
+    <pre><code class="python">
+  def build_list_type_validator(item_validator):
+
+      def validate_list_of_type(value):
+          return [item_validator(item)
+                  for item in validate_list(value)]
+
+      return validate_list_of_type
+
+
+  # Compose a previous validator
+  validate_list_of_ints = \
+      build_list_type_validator(validate_int)
+    </code></pre>
+  </section>
 
   <section>
     <p class="left">Enumerate some common validators</p>
@@ -764,6 +762,7 @@
     </ul>
   </section>
 
+<!-- 
   <section>
     <h3>Also...</h3>
     <ul class="spaced">
@@ -773,6 +772,7 @@
       <li>sphinx documentation</li>
     </ul>
   </section>
+-->
 
   <section>
       <h3>References</h3>
