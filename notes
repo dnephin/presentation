@@ -18,15 +18,3 @@ testing - MockConfig , test coverage
  - why flattened is easier to merge
  - the problems trying to solve
 
-- loaders are not classes
-- read only
-
-- cut cache_as_field/extract value
-- build class def, remove contents dict 
-- cut out more details of the code
-- highlight purpose of the modules isntead
-
-typo
-- timesouts
-- talk about merging of config
-- YamlCofiguration

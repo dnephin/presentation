@@ -184,13 +184,18 @@
   </section>
 
   <section>
+    <h3>The Goal</h3>
+    <p>Read configuration and make it <br />available in a usable format</p>
+  </section>
+
+  <section>
     <h3>Options?</h3>
     <ul>
       <li><a href="http://docs.python.org/library/configparser.html">ConfigParser</a> in stdlib</li>
+      <li><a href="http://pyyaml.org/wiki/PyYAMLDocumentation">PyYAML</a></li>
       <li><a href="https://pypi.python.org/pypi/ZConfig">ZConfig</a> from zope</li>
       <li><a href="http://pythonhosted.org/ConfigObject/">ConfigObject</a></li>
     </ul>
-
   </section>
 </section>
 
@@ -201,21 +206,14 @@
     <p class="left padded">Support many configuration file formats</p>
     <ul class="left spaced">
         <li>separate configuration loading from configuration reading</li>
-        <li>lots of common code shared between the different loaders</li>
+        <li>easily extendible to new formats</li>
+        <li>override and merge configurations</li>
         <li>trade-off: flatten nested structures vs preserve nesting</li>
     </ul>
   </section>
 
   <section>
   <p class="left">The trade-off: flatten everything</p>
-  <p class="filename">flat</p>
-  <pre><code class="python">
-  {
-      'table.max_rows': 10,
-      'table.strategy.name': 'alternate',
-      'table.strategy.rate': 3
-  }
-  </code></pre>
   <p class="filename">nested</p>
   <pre><code class="python">
   {
@@ -228,6 +226,14 @@
       }
   }
   </code></pre>
+  <p class="filename">flat</p>
+  <pre><code class="python">
+  {
+      'table.max_rows': 10,
+      'table.strategy.name': 'alternate',
+      'table.strategy.rate': 3
+  }
+  </code></pre>
   </section>
 
   <section>
@@ -237,11 +243,10 @@
     def __init__(self, name):
         self.configuration_values = {}
 
-    def apply_config_data(self,
-            config_data, error_on_unknown, error_on_dupe):
-        self.validate_keys(config_data, error_on_unknown)
-        self.has_duplicate_keys(config_data, error_on_dupe)
-        self.update_values(config_data)
+    def apply_config_data(self, config_data, ...):
+        # validate values
+        # check for duplicate keys
+        # update self.configuration_values
 
     def get(self, item, default=None):
         ...
@@ -260,19 +265,31 @@
   def build_loader(loader_func):
 
       def loader(*args, **kwargs):
-          ...
           # Call the loader_func that was passed in
-          config_data = load_config_data(
-                          loader_func, *args, **kwargs)
+          config_data = loader_func(*args, **kwargs)
 
           # Flatten the nested structure
           config_data = dict(flatten_dict(config_data))
 
           # Load it into a ConfigNamespace object
-          namespace   = config.get_namespace(name)
-          namespace.apply_config_data(config_data, ...)
+          config_namespace.apply_config_data(config_data, ...)
   
       return loader
+  </code></pre>
+  </section>
+
+  <section>
+  <p class="left">Build some default loaders for different file formats</p>
+  <pre><code class="python">
+  YamlConfiguration       = build_loader(yaml_loader)
+  JSONConfiguration       = build_loader(json_loader)
+  ListConfiguration       = build_loader(list_loader)
+  DictConfiguration       = build_loader(lambda d: d)
+  ObjectConfiguration     = build_loader(object_loader)
+  PythonConfiguration     = build_loader(python_loader)
+  INIConfiguration        = build_loader(ini_file_loader)
+  XMLConfiguration        = build_loader(xml_loader)
+  PropertiesConfiguration = build_loader(properties_loader)
   </code></pre>
   </section>
 
@@ -301,33 +318,19 @@
   </section>
 
   <section>
-  <p class="left">Build some default loaders for different file formats</p>
-  <pre><code class="python">
-  YamlConfiguration       = build_loader(yaml_loader)
-  JSONConfiguration       = build_loader(json_loader)
-  ListConfiguration       = build_loader(list_loader)
-  DictConfiguration       = build_loader(lambda d: d)
-  ObjectConfiguration     = build_loader(object_loader)
-  PythonConfiguration     = build_loader(python_loader)
-  INIConfiguration        = build_loader(ini_file_loader)
-  XMLConfiguration        = build_loader(xml_loader)
-  PropertiesConfiguration = build_loader(properties_loader)
-  </code></pre>
-  </section>
-
-  <section>
   <p class="left">Build your own</p>
   <pre><code class="python">
   import requests
   from staticconf.loader import build_loader
 
   def remote_config_loader(url, auth=None):
-     return requests.get(url, auth=auth).json()
+      return requests.get(url, auth=auth).json()
 
-  RemoteConfiguration = build_loader(remote_config_loader)
+  load_remote_config = build_loader(remote_config_loader)
+
   ...
 
-  RemoteConfiguration('http://example.com/config/current')
+  load_remote_config('http://example.com/config/current')
   </code></pre>
   </section>
 
@@ -338,11 +341,11 @@
   INIConfiguration('/etc/coolapp/config.ini')
 
   # Load user defaults
-  YamlCofiguration('/home/user/.coolapp.yaml')
+  YamlConfiguration('/home/user/.coolapp.yaml')
 
   # Load overrides from os.environ
   env_config = dict((k, v) for k, v os.environ.iteritems()
-                    if  k.startswith('coolapp'))
+                    if k.startswith('coolapp'))
   DictConfiguration(env_config)
 
   # Load overrides from optparse
@@ -358,15 +361,16 @@
     <h3>Next - Getting Values</h3>
     <p class="left">Retrieve a value from a ConfigNamespace</p>
     <ul class="left spaced">
-      <li>validate type of the value</li>
+      <li>perform validation on values</li>
       <li>cache expensive casting operations</li>
+      <li>register expected configuration keys</li>
     </ul>
   </section>
 
   <section>
     <p class="left">Magical proxies</p>
     <pre><code class="python">
-  value = staticconf.get_int('something', default=3)
+  value = staticconf.get_int('the_key', default=3)
 
   print range(value)
   # [0, 1, 2]
@@ -386,6 +390,26 @@
   </section>
 
   <section>
+    <p class="left">The special methods</p>
+    <pre><code>
+ __abs__         __add__         __and__         __call__  
+ __contains__    __delitem__     __delslice__    __div__  
+ __eq__          __float__       __floordiv__    __ge__  
+ __getitem__     __gt__          __hash__        __hex__  
+ __imul__        __int__         __invert__      __ior__  
+ __long__        __lshift__      __lt__          __mod__  
+ __mul__         __ne__          __neg__         __oct__  
+ __or__          __pos__         __pow__         __radd__  
+ __rand__        __rdiv__        __rdivmod__     __reduce__  
+ __repr__        __reversed__    __rlshift__     __setitem__  
+ __setslice__    __sub__         __truediv__     __xor__  
+ next            __nonzero__     __str__         __index__  
+ __irshift__     __rsub__        __unicode__     __iand__  
+ __len__         __divmod__      __rmod__       ...
+    </code></pre>
+  </section>
+
+  <section>
     <p class="left">What is a ValueProxy?</p>
     <pre><code class="python">
   class ValueProxy(object):
@@ -393,8 +417,7 @@
    
       def __new__(cls, *args, **kwargs):
           klass = build_class_def(cls)
-          instance = object.__new__(klass)
-          klass.__init__(instance, *args, **kwargs)
+          ...
           return instance
   
       def __init__(self,
@@ -402,9 +425,8 @@
           ...
   
       @property
-      @cache_as_field('_value')
       def value(self):
-          return extract_value(self)
+          # Return the value from the ConfigNamespace using key
     </code></pre>
   </section>
 
@@ -412,43 +434,30 @@
     <p class="left">Fake being every class</p>
     <pre><code class="python">
   def build_class_def(cls):
-      ...
-  
+
+      # A dict of special_name to method() 
       contents = dict((name, build_method(name))
                       for name in _special_names)
+
+      # Create a new class
       return type(cls.__name__, (cls,), contents)
 
 
-  # method() extracted from above for clarity
   def method(self, *args, **kwargs):
-      if name in unary_funcs:
-          return unary_funcs[name](self.value)
 
-      if hasattr(operator, name):
-          return getattr(operator, name)(self.value, *args)
-  
+      # Delegate the call to the value in the ProxyValue  
       return getattr(self.value, name)(*args, **kwargs)
     </code></pre>
   </section>
 
   <section>
-    <p class="left">The special methods</p>
-    <pre><code class="python">
-'__abs__',      '__add__',      '__and__',      '__call__',
-'__contains__', '__delitem__',  '__delslice__', '__div__',
-'__eq__',       '__float__',    '__floordiv__', '__ge__',
-'__getitem__',  '__gt__',       '__hash__',     '__hex__',
-'__imul__',     '__int__',      '__invert__',   '__ior__',
-'__long__',     '__lshift__',   '__lt__',       '__mod__',
-'__mul__',      '__ne__',       '__neg__',      '__oct__',
-'__or__',       '__pos__',      '__pow__',      '__radd__',
-'__rand__',     '__rdiv__',     '__rdivmod__',  '__reduce__',
-'__repr__',     '__reversed__', '__rlshift__',  '__setitem__',
-'__setslice__', '__sub__',      '__truediv__',  '__xor__',
-'next',         '__nonzero__',  '__str__',      '__index__',
-'__irshift__',  '__rsub__',     '__unicode__',  '__iand__',
-'__len__',      '__divmod__',   '__rmod__',     ...
-    </code></pre>
+    <h3>Why the magic?</h3>
+    <ul class="spaced">
+      <li>register expected keys, so missing keys are noticed
+          immediately when configuration is loaded</li>
+      <li>deferred reading of configuration value</li>
+    </ul>
+
   </section>
 </section>
 
@@ -458,20 +467,18 @@
     <ul class="spaced">
       <li>configuration formats don't support all types (ex: dates)</li>
       <li>casting things to the type you want can be tedious</li>
+      <li>simplify error handling</li>
     </ul>
   </section>
 
   <section>
     <p class="left">Common validators</p>
     <pre><code class="python">
-  def validate_numeric(type_func, value):
+  def validate_int(value):
       try:
-          return type_func(value)
+          return int(value)
       except ValueError:
           raise ValidationError(...)
-
-  def validate_int(value):
-      return validate_numeric(int, value)
 
   # Some supported date formats
   date_formats = ["%Y-%m-%d %H:%M:%S", ... ]
@@ -551,12 +558,14 @@
     <pre><code class="python">
   HostConfig = namedtuple('HostConfig', 'host port timeout')
 
-  def validate_something(input):
+  def validate_host_config(input):
       try:
           host, port, timeout = validate_tuple(input)
+
           return HostConfig(validate_string(host),
                             validate_int(port),
                             validate_timeout(timeout))
+
       except ValueError as e:
           raise ValidationError(
               "Not a valid host config: {0}, {1}"...)
@@ -571,7 +580,9 @@
     <p class="left padded">Readers: a more obvious approach</p>
     <ul class="left spaced">
       <li>use validators to get the correct type</li>
-      <li>no proxy, no caching</li>
+      <li>no proxy magic</li>
+      <li>no caching</li>
+      <li>no expected key registry</li>
     </ul>
   </section>
 
@@ -582,10 +593,11 @@
 
   max_iterations = staticconf.read_int('max_iterations',
                                        default=10)
+  ...
 
   print "Running until {0}".format(
       staticconf.read_datetime('end_time'))
-
+  ...
 
   logging.getLogger().setLevel(
       staticconf.read_log_level('default_log_level'))
@@ -597,36 +609,34 @@
     <pre><code class="python">
   import staticconf
 
-  connect_timeout = staticconf.read_int(hostname,
-                                        namespace='timesouts')
+  connect_timeout = staticconf.read_int(
+                          'servicea.timeout.connect',
+                          namespace='services')
 
   ...
 
-  timeout_config = staticconf.NamespaceReader('timeouts')
+  timeout_config = staticconf.NamespaceReader('services')
 
-  connect_timeout = timeout_config.read_int(hostname)
+  connect_timeout = timeout_config.read_int(
+                          'servicea.timeout.connect')
     </code></pre>
   </section>
 
   <section>
-    <p class="left">Building from validators, without the boilerplate</p>
+    <p class="left">Building a reader from a validator</p>
     <pre><code class="python">
   def build_reader(validator, ...):
-      def reader(config_key,
-                 default=UndefToken,
-                 namespace=None):
 
-          config_namespace = config.get_namespace(namespace)
-          return validator(_read_config(config_key,
-                                        config_namespace,
-                                        default))
+      def reader(config_key, default=UndefToken, ...):
+
+          value = _read_config(config_key, ...)
+          return validator(value)
+
       return reader
 
-  # Put it all together
-  def build_accessor_type(name_factory, builder):
-      accessor_map = dict(get_all_accessors(name_factory))
-      return lambda name: \
-          NamespaceAccessor(name, accessor_map, builder)
+  ...
+
+  read_int = build_reader(validate_int)
     </code></pre>
   </section>
 </section>
@@ -634,7 +644,13 @@
 <section>
   <section>
     <h3>Schemas</h3>
-    <p>Grouping similar things together is nice</p>
+    <p class="left">The best of getters and readers</p>
+    <ul class="spaced left">
+      <li>logical grouping of related config</li>
+      <li>use a validator to get the correct type</li>
+      <li>register expected configuration keys</li>
+      <li>no proxy magic</li>
+      <li>no cache</li>
   </section>
 
   <section>
@@ -648,12 +664,11 @@
       # (optional) config path to prepend to keys
       config_path = 'my_class.foo'
 
-
       # configured at my_class.foo.ratio
       ratio = schema.float(default=0.2)
 
-      # configured at my_class.foo.max
-      max_threshold = schema.int(config_key='max')
+      # configured at my_class.foo.max-thresh
+      max_threshold = schema.int(config_key='max-thresh')
 
 
   config = MyConfigSchema()
@@ -681,7 +696,7 @@
 <section>
   <section>
     <h3>Reloading</h3>
-    <p>Configuration can change</p>
+    <p class="left">Configuration can change while the process is still running</p>
     <ul class="spaced">
       <li>long running processes should be able to pick up configuration changes</li>
       <li>program structure shouldn't need to change</li>
@@ -694,19 +709,20 @@
     <pre><code class="python">
  # Only check for modifications once ever min_interval
  def should_check(self):
+
      return self.last_check + self.min_interval &lt;= time.time()
+
 
  # Get the most recent modified time
  def most_recent_changed(self):
+
      return max(os.path.getmtime(name)
                 for name in self.filenames)
 
+
  # Get the inode and device id of files
  def get_inodes(self):
-     def get_inode(stbuf):
-         return stbuf.st_dev, stbuf.st_ino
-     return [get_inode(os.stat(filename))
-             for filename in self.filenames]
+     # Compare inode and device id to previous values
     </code></pre>
   </section>
 
@@ -761,18 +777,6 @@
       <li>weakref</li>
     </ul>
   </section>
-
-<!-- 
-  <section>
-    <h3>Also...</h3>
-    <ul class="spaced">
-      <li>unit tests</li>
-      <li>acceptance tests</li>
-      <li>composition, no inheritance</li>
-      <li>sphinx documentation</li>
-    </ul>
-  </section>
--->
 
   <section>
       <h3>References</h3>
