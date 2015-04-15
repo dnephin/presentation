@@ -3,14 +3,13 @@
     <head>
         <meta charset="utf-8">
 
-        <title>intro-to-git</title>
+        <title>git</title>
 
         <meta name="author" content="Daniel Nephin">
         <link rel="stylesheet" href="reveal.js/css/reveal.min.css">
         <link rel="stylesheet" href="reveal.js/css/theme/default.css" id="theme">
-        <link href='http://fonts.googleapis.com/css?family=PT+Sans'
-              rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Monda'
+        <link 
+        href='http://fonts.googleapis.com/css?family=Coda:400,800|Passion+One:900|PT+Sans'
               rel='stylesheet' type='text/css'>
 
         <!-- For syntax highlighting -->
@@ -36,12 +35,19 @@
 
 .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
   text-transform: none;
-  font-family: 'Monda', sans-serif;
+  font-family: 'Coda', sans-serif;
+  font-weight: 800;
   letter-spacing: normal;
 }
 
+.reveal h1 {
+  font-family: 'Passion One';
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
 .reveal pre {
-  width: 100%;
+  width: auto;
   margin: 0;
   font-size: 0.7em;
 }
@@ -51,7 +57,23 @@
   max-height: none;
 }
 
-.reveal ul.none {
+.reveal ul li {
+  line-height: 1.5em;
+  font-size: 1.2em;
+}
+
+.reveal blockquote {
+  font-size: 1.5em;
+  width: auto;
+  margin: 0;
+  padding: 1.5em;
+}
+
+.reveal blockquote p {
+  margin: 0;
+}
+
+.reveal section.plain-list ul {
   list-style-type: none;
 }
 
@@ -59,8 +81,6 @@
     </head>
 
 <!--
-
-Notes:
 
 * intro myself
 * why I think git is important
@@ -104,52 +124,98 @@ Notes:
   * the filesystem database
 
 -->
-
-    <body>
-        <div class="reveal">
-            <div class="slides">
+<body><div class="reveal"><div class="slides">
 
 <section>
   <h1>git</h1>
-  <h2>an introduction</h2>
+  <h4>Distributed Version Control System</h4>
 </section>
 
 <section>
-  <h2>Background</h2>
-</section>
-
-<section>
-  <h2>Not just for code!</h2>
-</section>
-
-<section>
-  <h2>Why use git?</h2>
-  <ul>
-    <li>versions</li>
-    <li>backups</li>
-    <li>collaboration</li>
-    <li>history</li>
-  </ul>
-</section>
-
-<section>
+  <!-- animated time lapse of code changes? -->
   <h2></h2>
 </section>
 
 <section>
-  <h2></h2>
+  <h2>Version Control?</h2>
 </section>
 
 <section>
+  <!-- file versioning example -->
   <h2></h2>
 </section>
 
-<section>
-  <h2></h2>
+<section data-markdown class="plain-list">
+## The History
+
+* 1972 &mdash; SCCS (Bell Labs)
+* 1986 &mdash; CVS
+* 2000 &mdash; Subversion
+* 2005 &mdash; Git, Bazaar, Mercurial
+</section>
+
+<section data-markdown>
+> My hatred of CVS has meant that I see Subversion as being the most pointless 
+> project ever started ... [their] slogan was 'CVS done right' ...
+> if you start with that kind of slogan, there is nowhere you can go
+> ... there is no way to do CVS right.
+
+\- Linus Torvalds
 </section>
 
 <section>
-  <h2></h2>
+  <h2>Why use version control?</h2>
+</section>
+
+
+<section>
+<section data-markdown>
+## Version History
+  
+</section>
+
+<section data-markdown>
+## 
+</section>
+</section>
+
+
+<section>
+<section data-markdown>
+## Backups
+</section>
+
+<section>
+  <!-- TODO: image with email backups -->
+</section>
+
+<section>
+  <!-- TODO: git branch image? -->
+</section>
+</section>
+
+
+<section>
+<section data-markdown>
+## Collaboration 
+</section>
+
+<section>
+  <!-- TODO: image with scientist working in a room -->
+</section>
+
+<section>
+  <!-- TODO: git diff image -->
+</section>
+</section>
+
+
+<section data-markdown>
+## 
+</section>
+
+<section data-markdown>
+## 
 </section>
 
             </div>
@@ -167,7 +233,7 @@ Notes:
                 center:         true,
                 rollingLinks:   false,
                 transition:     'linear', // default/cube/page/concave/zoom/linear/fade/none
-                theme:          'solarized',
+                theme:          'night',
 
                 dependencies: [
                     { src: 'reveal.js/lib/js/classList.js',
