@@ -161,7 +161,7 @@
 </section>
 
 <section>
-  <!-- animated time lapse of code changes? -->
+  <!-- TODO: animated time lapse of code changes? -->
   <h2></h2>
 </section>
 
@@ -170,7 +170,7 @@
 </section>
 
 <section>
-  <!-- file versioning example -->
+  <!-- TODO: bad filename file versioning example -->
   <h2></h2>
 </section>
 
@@ -204,7 +204,10 @@
 </section>
 
 <section data-markdown>
-## 
+#### Versions with git
+* every change includes metadata: author, date, context message
+* easily compare versions
+* 
 </section>
 </section>
 
@@ -219,7 +222,16 @@
 </section>
 
 <section>
-  <!-- TODO: git branch image? -->
+  <img src="imgs/backup-failed.png" />
+</section>
+
+<section data-markdown>
+#### Git Backups
+* easy to find a specific version
+* restore is a common operation
+* transfered data is compressed
+* some on disk compression
+* bad for binary files
 </section>
 </section>
 
@@ -233,8 +245,12 @@
   <img src="imgs/pulling-hair.jpg" />
 </section>
 
-<section>
-  <!-- TODO: git diff image -->
+<section data-markdown>
+#### Git as a collaboration tool
+* many changes can be automatically merged
+* decentralized
+* everyone can have their own "fork"
+* every change includes metadata
 </section>
 </section>
 
@@ -250,13 +266,11 @@
 ## How? 
 </section>
 
-<section data-markdown>
-### Specification
-a local database of "snapshots" of your data
-
-### Implementation
-software which reads the local database and allows you 
-to interact with it
+<section data-markdown class="plain-list">
+## Terminology
+* repository &mdash; a local database of "snapshots" of files
+* git client &mdash; a piece of software which allows you to interact
+  with the repository
 </section>
 
 <section>
