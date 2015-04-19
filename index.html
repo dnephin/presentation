@@ -54,6 +54,7 @@
   width: auto;
   margin: 0;
   font-size: 0.7em;
+  box-shadow: none;
 }
 
 .reveal pre code {
@@ -144,12 +145,11 @@
     * git pull
   * collaborating
     * git clone
-    * git fetch
+    * git tag
     * git branch
 
 * going further
   * git reflog
-  * tig
   * the filesystem database
 
 -->
@@ -240,6 +240,7 @@
 
 
 <section data-markdown>
+#### Do everything with the same tool!
 * version history
 * backups
 * collaboration
@@ -414,6 +415,12 @@ Date:   Sun Apr 19 13:15:31 2015 -0400
 </section>
 
 <section data-markdown>
+#### Important Terms 
+* repository
+* commit
+</section>
+
+<section data-markdown>
 #### Modifying the repository
 * git init
 * git add
@@ -457,7 +464,6 @@ Initialized empty Git repository in /var/git/first-git-project.git/
  </code></pre>
 </section>
 
-
 <section>
  <p>Adding a remote repository
  <pre class="code-title">git remote</pre>
@@ -466,32 +472,57 @@ Initialized empty Git repository in /var/git/first-git-project.git/
 $ git remote add origin git@github.com:dnephin/first-git-project.git
 
 $ git remote add backup user@backup.dn.com:/var/git/first-git-project.git
+
+$ cat .git/config
+
+[remote "origin"]
+    url = git@github.com:dnephin/first-git-project.git
+    fetch = +refs/heads/*:refs/remotes/origin/*
+[remote "backup"]
+    url = user@backup.dn.com:/var/git/first-git-project.git
+    fetch = +refs/heads/*:refs/remotes/backup/*
  </code></pre>
 </section>
 
-
 <section>
  <p>Pushing to a remote repository
- <pre class="code-title">git remote</pre>
+ <pre class="code-title">git push</pre>
 
  <pre><code class="shell">
-$ git remote add origin git@github.com:dnephin/first-git-project.git
+$ git push
 
-$ git remote add backup user@backup.dn.com:/var/git/first-git-project.git
+Counting objects: 22, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (6/6), done.
+Writing objects: 100% (6/6), 1.76 MiB | 1.20 MiB/s, done.
+Total 6 (delta 2), reused 0 (delta 0)
+To git@github.com:dnephin/first-git-project.git
+   32dc7a8..1a0698c  master -> master
  </code></pre>
+</section>
 
+<section>
+ <p>Pulling from a remote repository
+ <pre class="code-title">git pull</pre>
+
+ <pre><code class="shell">
+$ git pull backup master
+
+From user@backup.dn.com:/var/git/first-git-project.git
+ * branch            master     -> FETCH_HEAD
+Updating 1cfcc37..5474bdf
+Fast-forward
+ README | 5 +++++
+ 1 file changed, 5 insertions(+)
+ </code></pre>
 </section>
 
 
 <section data-markdown>
-
-    * github
-    * other remotes
-    * add a remote
-    * git push
-    * git pull
-
-
+#### Working with Remotes
+* git remote add
+* git push
+* git pull
 </section>
 </section>
 
@@ -500,14 +531,112 @@ $ git remote add backup user@backup.dn.com:/var/git/first-git-project.git
 ## Collaborating
 </section>
 
+<section>
+ <p>Cloning a repository
+ <pre class="code-title">git clone</pre>
+
+ <pre><code class="shell">
+$ git clone git@github.com:dnephin/presentation.git
+
+Cloning into 'presentation'...
+remote: Counting objects: 264, done.
+remote: Compressing objects: 100% (9/9), done.
+remote: Total 264 (delta 2), reused 0 (delta 0), pack-reused 255
+Receiving objects: 100% (264/264), 2.22 MiB | 852.00 KiB/s, done.
+Resolving deltas: 100% (132/132), done.
+Checking connectivity... done.
+ </code></pre>
+</section>
+
 <section data-markdown>
-## 
+## Trees and Branches?
+![Math Tree](imgs/git-tree.svg)
+</section>
+
+<section>
+ <p>View existing branches
+ <pre class="code-title">git branch</pre>
+
+ <pre><code class="shell">
+$ git branch -a 
+
+* master
+  remotes/origin/coffeescript
+  remotes/origin/intro-to-git
+  ...
+ </code></pre>
+ <div>
+ <a href="https://github.com/dnephin/presentation/network">
+ https://github.com/dnephin/presentation/network
+ </a>
+ </div>
+</section>
+
+<section>
+ <p>Switching between branches
+ <pre class="code-title">git checkout</pre>
+
+ <pre><code class="shell">
+$ git checkout -b linux-commands
+Switched to a new branch 'linux-commands'
+
+$ git branch
+* linux-commands
+  master
+
+$ git checkout master
+Switched to branch 'master'
+
+$ git branch
+  linux-commands
+* master
+ </code></pre>
+</section>
+
+
+<section>
+ <p>Tagging a commit
+ <pre class="code-title">git tag</pre>
+
+ <pre><code class="shell">
+$ git tag "v1.0.0"
+
+$ git tag
+v1.0.0
+
+$ git push origin --tags
+
+To git@github.com:dnephin/presentation .git
+ * [new tag]         v1.0.0 -> v1.0.0
+ </code></pre>
+</section>
+
+<section data-markdown>
+#### Important terms
+* tree
+* branch
+* tag
+ 
+</section>
+
+<section data-markdown>
+#### Working with branches and tags
+* git checkout
+* git branch
+* git tag
+
 </section>
 </section>
 
 
 <section data-markdown>
-## 
+## Just the start...
+* [branch workflows](http://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows)
+* [git rebase](http://git-scm.com/book/en/v2/Git-Branching-Rebasing)
+* [git reflog](http://git-scm.com/docs/git-reflog)
+* [details about the internals](http://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain)
+
+http://git-scm.com/doc
 </section>
 
             </div>
