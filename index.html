@@ -46,6 +46,10 @@
   letter-spacing: 0.1em;
 }
 
+.reveal h3 {
+  margin-top: 2em;
+}
+
 .reveal pre {
   width: auto;
   margin: 0;
@@ -62,6 +66,11 @@
   font-size: 1.2em;
 }
 
+.reveal ul {
+  margin-bottom: 1.5em;
+}
+
+
 .reveal blockquote {
   font-size: 1.5em;
   width: auto;
@@ -75,6 +84,25 @@
 
 .reveal section.plain-list ul {
   list-style-type: none;
+}
+
+.reveal section img {
+  border: none;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.reveal pre code {
+  padding-left: 2em;
+}
+
+.reveal pre.code-title {
+  color: #e7ad52;
+  margin-bottom: 10px;
+}
+
+.reveal div {
+  margin-top: 1em;
 }
 
     </style>
@@ -106,8 +134,9 @@
     * git add
     * git commit
     * git status
+    * git diff
     * git log
-  * doing backups
+ * doing backups
     * github
     * other remotes
     * add a remote
@@ -201,7 +230,7 @@
 </section>
 
 <section>
-  <!-- TODO: image with scientist working in a room -->
+  <img src="imgs/pulling-hair.jpg" />
 </section>
 
 <section>
@@ -211,8 +240,271 @@
 
 
 <section data-markdown>
+* version history
+* backups
+* collaboration
+</section>
+
+<section data-markdown>
+## How? 
+</section>
+
+<section data-markdown>
+### Specification
+a local database of "snapshots" of your data
+
+### Implementation
+software which reads the local database and allows you 
+to interact with it
+</section>
+
+<section>
+<section data-markdown>
+## Git Clients
+* Github Desktop Client (osx, windows)
+* Tower (osx)
+* TortoiseGit (windows)
+* git cli (all)
+
+
+http://git-scm.com/downloads/guis
+</section>
+
+<section>
+  <img src="imgs/github-windows.png" />
+</section>
+
+</section>
+
+<section>
+<section>
+ <h2>Getting Started</h2>
+
+ <p>Create a new git repository<p>
+
+ <pre class="code-title">git init</pre>
+
+ <pre><code class="shell">
+$ git init first-git-project
+Initialized empty Git repository in /home/daniel/first-git-project/.git/
+
+$ ls first-git-project/.git/
+branches/
+config
+description
+HEAD
+hooks/
+info/
+objects/
+refs/
+ </code></pre>
+</section>
+
+<section>
+ <p>Get the status of files in our repository
+ <pre class="code-title">git status</pre>
+
+ <pre><code class="shell">
+$ git status
+On branch master
+
+Initial commit
+
+nothing to commit
+ </code></pre>
+</section>
+
+<section>
+ <p>Adding files to our repository
+ <pre class="code-title">git add</pre>
+
+ <pre><code class="shell">
+$ touch README
+$ git status
+
+Untracked files:
+        README
+
+$ git add README
+$ git status
+
+Changes to be committed:
+        new file:   README
+ </code></pre>
+</section>
+
+<section>
+ <p>Commit files to our repository
+ <pre class="code-title">git commit</pre>
+
+ <pre><code class="shell">
+$ git commit -m "Initial commit."
+
+[master (root-commit) 1cfcc37] Initial commit.
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 README
+
+$ git status
+
+On branch master
+nothing to commit, working directory clean
+ </code></pre>
+</section>
+
+<section>
+ <p>See the difference
+ <pre class="code-title">git diff</pre>
+ <pre><code class="shell">
+$ vim README
+$ git diff
+
+diff --git a/README b/README
+index e69de29..51d27c4 100644
+--- a/README
++++ b/README
+@@ -0,0 +1,5 @@
++
++This is my first git repo
++=========================
++
++Some text here.
+
+$ git status
+
+Changes not staged for commit:
+        modified:   README
+ </code></pre>
+</section>
+
+<section>
+ <p>Add our changes to the repository
+ <pre><code class="shell">
+$ git add README
+$ git commit -m "Add some text to the README."
+
+[master 5474bdf] Add some text to the README.
+1 file changed, 5 insertions(+)
+
+$ git status
+
+On branch master
+nothing to commit, working directory clean
+ </code></pre>
+</section>
+
+
+<section>
+ <p>View the history log
+ <pre class="code-title">git log</pre>
+ <pre><code class="shell">
+$ git log
+
+commit 5474bdfb6a3d1495efa023742d5e92bd73aa66b0
+Author: Daniel Nephin &lt;dnephin@gmail.com&gt;
+Date:   Sun Apr 19 13:35:02 2015 -0400
+
+    Add some text to the README.
+
+commit 1cfcc378fd3f63bccdd844678c8517b01bd31bc0
+Author: Daniel Nephin &lt;dnephin@gmail.com&gt;
+Date:   Sun Apr 19 13:15:31 2015 -0400
+
+    Initial commit.
+ </code></pre>
+</section>
+
+<section data-markdown>
+#### Modifying the repository
+* git init
+* git add
+* git commit
+
+#### Inspecting the repository
+* git status
+* git diff
+* git log
+</section>
+</section>
+
+<section>
+<section data-markdown>
+## Going Remote
+
+* github.com (service)
+* gitolite (self hosted)
+* gitlab (service and self hosted)
+* ssh
+</section>
+
+<section data-markdown>
+## Github
+
+https://github.com/join
+
+![Github Join](imgs/github-join.png)
+
+</section>
+
+<section>
+ <h2>Using SSH</h2>
+
+ <pre><code class="shell">
+$ ssh user@backup.dn.com
+
+$ mkdir /var/git
+$ git init --bare /var/git/first-git-project.git
+Initialized empty Git repository in /var/git/first-git-project.git/
+ </code></pre>
+</section>
+
+
+<section>
+ <p>Adding a remote repository
+ <pre class="code-title">git remote</pre>
+
+ <pre><code class="shell">
+$ git remote add origin git@github.com:dnephin/first-git-project.git
+
+$ git remote add backup user@backup.dn.com:/var/git/first-git-project.git
+ </code></pre>
+</section>
+
+
+<section>
+ <p>Pushing to a remote repository
+ <pre class="code-title">git remote</pre>
+
+ <pre><code class="shell">
+$ git remote add origin git@github.com:dnephin/first-git-project.git
+
+$ git remote add backup user@backup.dn.com:/var/git/first-git-project.git
+ </code></pre>
+
+</section>
+
+
+<section data-markdown>
+
+    * github
+    * other remotes
+    * add a remote
+    * git push
+    * git pull
+
+
+</section>
+</section>
+
+<section>
+<section data-markdown>
+## Collaborating
+</section>
+
+<section data-markdown>
 ## 
 </section>
+</section>
+
 
 <section data-markdown>
 ## 
@@ -242,8 +534,10 @@
                       condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
                     { src: 'reveal.js/plugin/markdown/markdown.js',
                       condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+/*
                     { src: 'reveal.js/plugin/highlight/highlight.js', async: true,
                       callback: function() { hljs.initHighlightingOnLoad(); } },
+*/
                     { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true,
                       condition: function() { return !!document.body.classList; } },
                     { src: 'reveal.js/plugin/notes/notes.js', async: true,
