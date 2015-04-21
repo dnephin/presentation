@@ -200,7 +200,6 @@ Those who cannot remember the past...
 * a log of every change
 * includes metadata about the change
 * easily compare versions
-* track multiple in-progress changes
 </section>
 </section>
 
@@ -222,8 +221,7 @@ Those who cannot remember the past...
 #### Git Backups
 * easy to find a specific version
 * restore is a common operation
-* transfered data is compressed
-* some on disk compression
+* data is compressed
 * bad for binary files
 </section>
 </section>
@@ -494,7 +492,7 @@ $ cat .git/config
  <pre class="code-title">git push</pre>
 
  <pre><code class="shell">
-$ git push
+$ git push origin master
 
 Counting objects: 22, done.
 Delta compression using up to 8 threads.
