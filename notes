@@ -1,0 +1,77 @@
+
+
+Git
+---
+Hello everyone, thanks for coming out
+
+I am a professional software engineer. I've worked at small companies with 12 
+person development teams, I've worker at large entrepreises like the yellow 
+pages group, and I currently work for Yelp, which is a local business reviews 
+site based out of san francisco.
+
+I use git almost everyday, I use it for work, I use it for personal projects, I 
+even used it to create this presentation.  I wanted to give this talk because I 
+really like git. I know it has a bit of a reputation for being complicated, but 
+I think distributed version control systems are some of the most important 
+piecces of software, and are really underused. They can be used for a lot more 
+than just software projects and programming.
+
+With this talk , I'd like to share why I think these tools are so important, and 
+hopefully allow you to dive in and start using them yourself.
+
+Version Control?
+----------------
+So let's start at the begining. What is version control?
+
+<shared folder example>
+-----------------------
+Does anyone recognize this?  This is basically primitive version control. The 
+problem is...
+
+It turns out, there is a better way to handle this.
+
+Timeline
+--------
+Version control software has been around since 1972, it came out of bell labs...
+
+CVS is probably the first notable one that is still in use today.
+
+2005 is when we started to see distributed version control systems. In the same 
+year all 3 of these were created. These distributed vcs worked quite differently 
+from their client/server predecesors. Instead of only having a single server, 
+everyone acted as a server. You can think of this kind of like a peer-to-peer 
+network, or decentralization.
+
+Of the 3, Git really stood out as the most widely used system. I'm not 
+completely sure why, but I have a strong feelign that it has to do with it's 
+creator. Git was created by Linus Torvald, who is widely known for being the 
+creator of the Linux operation system.
+
+<Linux quote>
+-------------
+
+To get some sense of why he wrote it,...
+
+While this is probably a little enflamatory, a  little exadurated, there is some 
+truth in this. The distributed systems are really a significant improvement over 
+their predecesors.
+
+
+Why use version control?
+------------------------
+This talk is primarily about Git, but many of the concepts should apply to any 
+of the distributed version control systems.
+
+So let's look at what these systems can do.
+
+
+Version History
+---------------
+I'm sure many people are familiar with the idea of "Those who cannot remember 
+the past are condemned to repeat it".  If we can't inspect the history of our 
+projects, we risk going in circles and making the same mistakes over again.
+
+Backups
+-------
+
+
