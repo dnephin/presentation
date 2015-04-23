@@ -613,6 +613,27 @@ Switched to branch 'master'
 $ git branch
   linux-commands
 * master
+
+$ git checkout -b intro-to-git origin/intro-to-git
+Branch intro-to-git set up to track remote branch intro-to-git from origin.
+Switched to a new branch 'intro-to-git'
+ </code></pre>
+</section>
+
+
+<section>
+ <p>Merging branches
+ <pre class="code-title">git merge</pre>
+
+ <pre><code class="shell">
+$ git branch
+* linux-commands
+  master
+
+$ git merge master
+Updating bcbc14d..95ef302
+Fast-forward
+ index.html                    | 126 ++++++++++++++++++++++++
  </code></pre>
 </section>
 
@@ -637,10 +658,12 @@ To git@github.com:dnephin/presentation.git
  </code></pre>
 </section>
 
+
 <section data-markdown>
 #### Important terms
 * tree
 * branch
+* merge
 * tag
  
 </section>
@@ -649,6 +672,7 @@ To git@github.com:dnephin/presentation.git
 #### Working with branches and tags
 * git checkout
 * git branch
+* git merge
 * git tag
 
 </section>
