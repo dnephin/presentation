@@ -1,0 +1,24 @@
+https://github.com/gnab/remark/wiki/Formatting
+
+
+Docker Compose
+- basics
+- v2 vs v3
+    - versioning scheme
+- docker-compose up vs docker stack deploy
+    - deploy settings
+- secrets
+- using an .override.yml
+
+Docker Build
+- basics
+- best practices
+- new features
+    - ARG in FROM
+    - multi-stage builds
+    - Dockerfile in stdin
+
+Dobi
+- project tasks
+- dependencies
+- examples
