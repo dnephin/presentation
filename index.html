@@ -7,25 +7,33 @@
       @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
       @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
       @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
-      body { font-family: 'Droid Serif'; }
-      h1, h2, h3 {
-        font-family: 'Yanone Kaffeesatz';
-        font-weight: normal;
-      }
-      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+body { font-family: 'Droid Serif'; }
+h1, h2, h3 {
+  font-family: 'Yanone Kaffeesatz';
+  font-weight: normal;
+}
+h2, h3 {
+  margin: 0.5em 0;
+}
+.remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+a:visited {
+  color: #333;
+}
+a {
+  text-decoration: none;
+}
 
-      table td, table th {
-        padding: 5px 10px;
-      }
+.panel {
+  width: 47%;
+  float: left;
+}
+.panel:first-of-type {
+  margin-right: 1.5em;
+}
 
-      .panel {
-        width: 48%;
-        float: left;
-      }
-
-      .panel h4 {
-        text-align: center;
-      }
+.panel h4 {
+  text-align: center;
+}
 
     </style>
   </head>
@@ -41,7 +49,22 @@ class: center, middle
 ---
 name: me
 
+.panel[
 ![dnephin github](img/github-me.png)
+
+]
+
+.panel[
+### About me
+
+* Docker Compose
+  * first contribution July 2014
+  * maintainer November 2014
+* Docker
+  * first contribution October 2015
+  * maintainer July 2016
+
+]
 
 ![github contributions](img/github-contrib.png)
 
@@ -63,33 +86,74 @@ layout: true
 ## Docker Compose
 ---
 
-[https://github.com/docker/compose](github.com/docker/compose)
+[github.com/docker/compose](https://github.com/docker/compose)
 
+Command line tool and yaml configuration.
 ```yaml
 version: '3.2'
 
-services: 
+services:
+  web:
+    image: dnephin/webapp:latest
+
+  database:
+    image: postgres:9.6-alpine
+    environment:
+      - POSTGRES_PASSWORD=
+      - POSTGRES_DB=myapp
+
+  cache:
+    image: redis:3.0-alpine
 
 ```
 
 ---
 
-### Version Comparison
+### Compose File - Version Comparison
 
 .panel[
 
 #### v2
 
-* added support for configuring volumes and networks
-* compatible with the container API 
+* first release February 2016
+* added support for configuring **volumes**, and **networks**
+* compatible with the **container** API 
+
+```yaml
+version: '2.1'
+services: ...
+
+volumes:
+  db-data:
+
+networks:
+  front: 
+```
+
 ]
 
 .panel[
 
 #### v3
 
-* added support for configuring secrets
-* compatible with the services API
+* first release January 2017
+* added support for configuring **deploy** options, and **secrets**
+* compatible with **swarm mode services** API
+
+```yaml
+version: '3.2'
+services:
+  web:
+    image: dnephin/web:latest
+    deploy:
+      replicas: 10
+
+secrets:
+  auth-cert:
+    file: ./certs/auth.crt
+
+```
+
 ]
 
 
@@ -101,17 +165,42 @@ services:
 
 #### docker-compose up   
 
-* supports v1, v2, v3
+* supports Compose file v1, v2, v3
 * focused on development and testing workflows
+* "service" concept is client-side
+* only supports multi-node when used with "swarm classic"
+* ignores `deploy` section in v3
+
+```bash
+docker-compose up
+```
 
 ]
 .panel[
 
 #### docker stack deploy
 
-* supports v3
+* only supports Compose file v3 
 * focused on production deployments
+* added to Docker version 1.13 (January 2017)
+* uses "swarm mode" services, which support multi-node deployments
+
+```bash
+docker stack deploy \
+  -f docker-compose.yml \
+  STACKNAME
+```
+
 ]
+
+---
+
+### Learn More
+
+* **Compose file reference** &mdash; [docs.docker.com/compose/compose-file](https://docs.docker.com/compose/compose-file)
+* **`docker-compose` docs** &mdash; [docs.docker.com/compose/overview](https://docs.docker.com/compose/overview/)
+* **`docker stack deploy` guide** &mdash; [docs.docker.com/engine/swarm/stack-deploy](https://docs.docker.com/engine/swarm/stack-deploy/)
+
 
 ---
 
@@ -131,12 +220,12 @@ layout: true
 
 ---
 
-```sh
+```bash
 docker build -t dnephin/web -f Dockerfile.web .
 ```
 
 
-```Dockerfile
+```dockerfile
 FROM alpine:3.5
 
 ```
@@ -189,7 +278,15 @@ meta:
     <script src="remark-latest.min.js" type="text/javascript">
     </script>
     <script type="text/javascript">
-      var slideshow = remark.create();
+var slideshow = remark.create({
+  ratio: '4:3',
+  navigation: {
+    scroll: false,
+    click: false,
+  },
+  slideNumberFormat: '',
+  highlightStyle: 'solarized-light',
+});
     </script>
   </body>
 </html>
