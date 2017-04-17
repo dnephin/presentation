@@ -220,27 +220,42 @@ layout: true
 
 ---
 
-```bash
-docker build -t dnephin/web -f Dockerfile.web .
-```
-
-
+`Dockerfile`
 ```dockerfile
-FROM alpine:3.5
+FROM    golang:1.7-alpine
+
+RUN     apk add -U git bash curl tree
+
+ARG     GLIDE=v0.12.3
+ARG     SRC=https://github.com/Masterminds/glide/releases/download/
+RUN     curl -sL ${SRC}/${GLIDE}/glide-${GLIDE}-linux-amd64.tar.gz | \
+        tar -xz linux-amd64/glide && \
+        mv linux-amd64/glide /usr/bin/glide && \
+        chmod +x /usr/bin/glide
+
+WORKDIR /go/src/github.com/dnephin/dobi
+ENV     PS1="# "
 
 ```
 
+`docker build`
+
+```bash
+docker build -t dnephin/web -f Dockerfile .
+```
+
+
 ---
 
-### New - Multi-stage Builds
+### New in 17.05 - Multi-stage Builds
 
 ---
 
-### New - ARG in FROM
+### New in 17.05 - ARG in FROM
 
 ---
 
-### New - Dockerfile from stdin
+### New in 17.05 - Dockerfile from stdin
 
 ---
 
