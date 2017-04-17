@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>My Awesome Presentation</title>
+    <title>Developing a Project with Docker</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <style type="text/css">
       @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
@@ -13,6 +13,20 @@
         font-weight: normal;
       }
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+
+      table td, table th {
+        padding: 5px 10px;
+      }
+
+      .panel {
+        width: 48%;
+        float: left;
+      }
+
+      .panel h4 {
+        text-align: center;
+      }
+
     </style>
   </head>
   <body>
@@ -20,24 +34,156 @@
 
 class: center, middle
 
-#  
+# Developing a Project with Docker 
 
 ???
 
-Notes for the _first_ slide!
+---
+name: me
+
+![dnephin github](img/github-me.png)
+
+![github contributions](img/github-contrib.png)
 
 ---
 
-# Agenda
+name: compose
+class: center, middle
 
-1. Introduction
-2. Deep-dive
-3. ...
+# Docker Compose
 
-[NOTE]: Note that you need remark.js alongside this html file, but no internet connection.
+Define and run multi-container applications with Docker
+
+![Compose logo](img/compose-logo.png)
+
 ---
 
-# Introduction
+layout: true
+
+## Docker Compose
+---
+
+[https://github.com/docker/compose](github.com/docker/compose)
+
+```yaml
+version: '3.2'
+
+services: 
+
+```
+
+---
+
+### Version Comparison
+
+.panel[
+
+#### v2
+
+* added support for configuring volumes and networks
+* compatible with the container API 
+]
+
+.panel[
+
+#### v3
+
+* added support for configuring secrets
+* compatible with the services API
+]
+
+
+---
+
+### Command-line Comparison
+
+.panel[
+
+#### docker-compose up   
+
+* supports v1, v2, v3
+* focused on development and testing workflows
+
+]
+.panel[
+
+#### docker stack deploy
+
+* supports v3
+* focused on production deployments
+]
+
+---
+
+layout: false 
+name: build
+class: center, middle
+
+# Docker Build
+
+Build an image from a Dockerfile
+
+---
+
+layout: true
+
+## Docker Build
+
+---
+
+```sh
+docker build -t dnephin/web -f Dockerfile.web .
+```
+
+
+```Dockerfile
+FROM alpine:3.5
+
+```
+
+---
+
+### New - Multi-stage Builds
+
+---
+
+### New - ARG in FROM
+
+---
+
+### New - Dockerfile from stdin
+
+---
+
+### Coming Soon
+
+---
+
+layout: false
+name: dobi
+class: center, middle
+
+# Dobi
+
+A build automation tool for Docker applications
+
+---
+
+layout: true
+## Dobi
+
+---
+
+[https://github.com/dnephin/dobi](github.com/dnephin/dobi)
+
+```yaml
+meta:
+  project: demo
+
+
+```
+
+
 
     </textarea>
     <script src="remark-latest.min.js" type="text/javascript">
