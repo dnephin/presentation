@@ -233,33 +233,115 @@ RUN     curl -sL ${SRC}/${GLIDE}/glide-${GLIDE}-linux-amd64.tar.gz | \
         mv linux-amd64/glide /usr/bin/glide && \
         chmod +x /usr/bin/glide
 
-WORKDIR /go/src/github.com/dnephin/dobi
 ENV     PS1="# "
+CMD     sh
 
 ```
 
 `docker build`
 
 ```bash
-docker build -t dnephin/web -f Dockerfile .
-```
+$ docker build -t dnephin/go-dev -f Dockerfile .
+...
+Successfully built 0d498f951e89
 
+$ docker image ls dnephin/go-dev
+...
+dnephin/go-dev      latest              0d498f951e89
+
+```
 
 ---
 
 ### New in 17.05 - Multi-stage Builds
 
+```dockerfile
+FROM    dnephin/go-dev:latest AS builder
+WORKDIR /go/src/github.com/dnephin/myapp
+COPY    . .
+RUN     go build -o /go/bin/myapp .
+
+FROM    scratch
+COPY    --from=builder /go/bin/myapp /
+ENTRYPOINT ["/myapp"]
+
+```
+
+Build the minimal image
+
+```bash
+$ docker build -t dnephin/myapp .
+```
+
+Build and tag the intermediate stage
+```bash
+$ docker build -t dnephin/myapp-builder --target builder .
+```
+
 ---
 
 ### New in 17.05 - ARG in FROM
+
+```dockerfile
+ARG     PY_VERSION
+FROM    python:${PY_VERSION}-alpine
+
+RUN     apk add -U py-pip
+RUN     pip install virtualenv tox pytest
+
+CMD     python
+```
+
+Build with different versions of python
+
+```bash
+$ docker build --build-arg PY_VERSION=3.3 -t dnephin/myapp:py3.3 .
+...
+$ docker build --build-arg PY_VERSION=2.7 -t dnephin/myapp:py2.7 .
+...
+
+```
 
 ---
 
 ### New in 17.05 - Dockerfile from stdin
 
+Example 1: Templated Dockerfile
+
+```handlebars
+FROM    {{platform_base}}
+COPY    install-{{platform}}.sh /tmp
+RUN     /tmp/install-{{platform}}.sh
+
+ENV     {{platform_envs}}
+CMD     /app/run
+```
+
+Render a template and build
+
+```bash
+$ ./render.sh | docker build -t dnephin/app -f - .
+```
+
+Example 2: Build with a dockerfile outside of the context directory
+
+```bash
+$ docker build -t dnephin/web -f - . &lt; ../../Dockerfile.common
+```
+
 ---
 
-### Coming Soon
+### Proposals
+
+* incremental build context sending
+* `IMPORT` and `EXPORT` to replace `ONBUILD`
+* `RUN --mount`
+* replace sequential build with a directed acyclic graph (DAG)
+
+### Learn More
+
+* Getting started with build &mdash; [docs.docker.com/engine/getstarted/step_four/](https://docs.docker.com/engine/getstarted/step_four/)
+* Dockerfile reference &mdash; [docs.docker.com/engine/reference/builder/](https://docs.docker.com/engine/reference/builder/)
 
 ---
 
@@ -278,16 +360,70 @@ layout: true
 
 ---
 
-[https://github.com/dnephin/dobi](github.com/dnephin/dobi)
+### Project Tasks
+
+* run unit test
+* release a new version
+* compile a binary
+* update code dependencies
+* generate code
+* run static analysis and style validation
+* generate reference documentation
+* watch code for changes and run tests on change
+* start an interactive development environment
+* run integration tests
+* run end-to-end acceptance tests
+* run performance and load tests
+* ...
+
+---
+
+### Why?
+
+* create a tool for running project tasks that is optimal, and language agnostic
+* allow project tasks to be portable and repeatable
+
+#### Result
+
+* supplement `docker build` to provide additional features
+* automation instead of (missing or incomplete) documentation
+* reduces barrier of entry to contribute to a project
+
+---
+
+[github.com/dnephin/dobi](https://github.com/dnephin/dobi)
 
 ```yaml
 meta:
   project: demo
 
+mount=source:
+  bind: .
+  path: /src
+
+image=builder:
+  image: demo-dev
+  context: dockerfiles/
 
 ```
 
+---
 
+### Build Enhancements
+
+* minimal images
+* use artifacts of jobs or services in an image
+* better build caching by using modified time of files and images
+* copy files from outside of the context into the build context
+* use secrets between build steps
+
+---
+
+### Learn More
+
+* Documentation &mdash; [dnephin.github.io/dobi/](https://dnephin.github.io/dobi/)
+* Examples &mdash; [dnephin.github.io/dobi/examples.html](https://dnephin.github.io/dobi/examples.html)
+* Source &mdash; [github.com/dnephin/dobi](https://github.com/dnephin/dobi)
 
     </textarea>
     <script src="remark-latest.min.js" type="text/javascript">
