@@ -353,6 +353,8 @@ class: center, middle
 
 A build automation tool for Docker applications
 
+[github.com/dnephin/dobi](https://github.com/dnephin/dobi)
+
 ---
 
 layout: true
@@ -391,21 +393,52 @@ layout: true
 
 ---
 
-[github.com/dnephin/dobi](https://github.com/dnephin/dobi)
+.panel[
+dobi.yaml
 
 ```yaml
-meta:
-  project: demo
-
 mount=source:
   bind: .
-  path: /src
+  path: /work
 
 image=builder:
   image: demo-dev
   context: dockerfiles/
+  steps: |
+    FROM    node:7.9-alpine
+    WORKDIR /work
 
+job=deps:
+  use: builder
+  mounts: [source]
+  command: "npm install"
+
+job=shell:
+  use: builder
+  mounts: [source]
+  interactive: true
+  command: sh
 ```
+]
+
+.panel[
+
+Install dependencies
+
+```bash
+$ dobi deps
+```
+
+Start an interactive shell
+```bash
+$ dobi shell
+```
+
+Remove the builder image
+```bash
+$ dobi builder:rm
+```
+]
 
 ---
 
@@ -415,10 +448,6 @@ image=builder:
 * better build caching by using modified time of files and images
 * copy files from outside of the context into the build context
 * use artifacts of jobs or services in an image
-
----
-
-
 
 
 ---
@@ -446,7 +475,7 @@ var slideshow = remark.create({
     click: false,
   },
   slideNumberFormat: '',
-  highlightStyle: 'ocean',
+  highlightStyle: 'railscasts',
 });
     </script>
   </body>
