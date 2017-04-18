@@ -35,6 +35,20 @@ a {
   text-align: center;
 }
 
+.narrow-panel {
+  width: 37%;
+  float: left;
+}
+.wide-panel {
+  width: 62%;
+  float: left;
+}
+
+#slide-me .wide-panel ul {
+  list-style: none;
+  font-size: 16px;
+}
+
     </style>
   </head>
   <body>
@@ -49,24 +63,30 @@ class: center, middle
 ---
 name: me
 
-.panel[
+.narrow-panel[
 ![dnephin github](img/github-me.png)
 
 ]
 
-.panel[
+.wide-panel[
 ### About me
 
-* Docker Compose
-  * first contribution July 2014
-  * maintainer November 2014
-* Docker
-  * first contribution October 2015
-  * maintainer July 2016
+* 2014
+  * July &mdash; first contribution to docker/compose
+  * November &mdash; maintainer of docker/compose
+* 2015
+  * August &mdash; joined Docker
+  * October &mdash; first contribution to docker/docker 
+* 2016 
+  * July &mdash; maintainer of docker/docker
 
 ]
 
 ![github contributions](img/github-contrib.png)
+
+???
+* opinions are my own
+* talk is about three projects
 
 ---
 
@@ -79,6 +99,8 @@ Define and run multi-container applications with Docker
 
 ![Compose logo](img/compose-logo.png)
 
+???
+* Who is familiar? Uses it?
 ---
 
 layout: true
@@ -107,6 +129,9 @@ services:
 
 ```
 
+???
+* started as just a tool
+* tool vs format
 ---
 
 ### Compose File - Version Comparison
@@ -475,7 +500,7 @@ var slideshow = remark.create({
     click: false,
   },
   slideNumberFormat: '',
-  highlightStyle: 'railscasts',
+  highlightStyle: 'solarized-light',
 });
     </script>
   </body>
