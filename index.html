@@ -59,35 +59,27 @@ class: center, middle
 # Developing a Project with Docker 
 
 ???
-
+* talk is about updates to developer tools 
 ---
 name: me
 
-.narrow-panel[
+.panel[
 ![dnephin github](img/github-me.png)
 
 ]
 
-.wide-panel[
-### About me
-
-* 2014
-  * July &mdash; first contribution to docker/compose
-  * November &mdash; maintainer of docker/compose
-* 2015
-  * August &mdash; joined Docker
-  * October &mdash; first contribution to docker/docker 
-* 2016 
-  * July &mdash; maintainer of docker/docker
+.panel[
+## About me
 
 ]
 
 ![github contributions](img/github-contrib.png)
 
 ???
+* started 3 years
+* joined 2 years
+* focus on developer experience
 * opinions are my own
-* talk is about three projects
-
 ---
 
 name: compose
@@ -130,8 +122,43 @@ services:
 ```
 
 ???
-* started as just a tool
 * tool vs format
+---
+
+### Command-line Comparison
+
+.panel[
+
+#### docker-compose up   
+
+* supports Compose file v1, v2, v3
+* ignores `deploy` section in v3
+* focused on development and testing workflows
+* "service" concept is client-side
+* only supports multi-node when used with "swarm classic"
+
+```bash
+docker-compose up
+```
+
+]
+.panel[
+
+#### docker stack deploy
+
+* only supports Compose file v3 
+* focused on production deployments
+* added to Docker version 1.13 (January 2017)
+* uses "swarm mode" services, which support multi-node deployments
+
+```bash
+docker stack deploy \
+  -f docker-compose.yml \
+  STACKNAME
+```
+
+]
+
 ---
 
 ### Compose File - Version Comparison
@@ -178,45 +205,10 @@ secrets:
     file: ./certs/auth.crt
 
 ```
-
 ]
 
-
----
-
-### Command-line Comparison
-
-.panel[
-
-#### docker-compose up   
-
-* supports Compose file v1, v2, v3
-* focused on development and testing workflows
-* "service" concept is client-side
-* only supports multi-node when used with "swarm classic"
-* ignores `deploy` section in v3
-
-```bash
-docker-compose up
-```
-
-]
-.panel[
-
-#### docker stack deploy
-
-* only supports Compose file v3 
-* focused on production deployments
-* added to Docker version 1.13 (January 2017)
-* uses "swarm mode" services, which support multi-node deployments
-
-```bash
-docker stack deploy \
-  -f docker-compose.yml \
-  STACKNAME
-```
-
-]
+???
+* uses Semantic Versioning
 
 ---
 
