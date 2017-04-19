@@ -59,23 +59,26 @@ class: center, middle
 # Developing a Project with Docker 
 
 ???
-* talk is about updates to developer tools 
+What am I talking about?
+* recent updates to compose and build
+* introduction to dobi
+
+Please feel free to ask questions
 ---
 name: me
 
 .panel[
 ![dnephin github](img/github-me.png)
-
 ]
 
 .panel[
 ## About me
-
 ]
 
 ![github contributions](img/github-contrib.png)
 
 ???
+Who am I ?
 * started 3 years
 * joined 2 years
 * focus on developer experience
@@ -92,7 +95,7 @@ Define and run multi-container applications with Docker
 ![Compose logo](img/compose-logo.png)
 
 ???
-* Who is familiar? Uses it?
+How familiar is everyone with Compose?
 ---
 
 layout: true
@@ -108,21 +111,23 @@ version: '3.2'
 
 services:
   web:
-    image: dnephin/webapp:latest
+    image: 'dnephin/webapp:latest'
 
   database:
-    image: postgres:9.6-alpine
+    image: 'postgres:9.6-alpine'
     environment:
       - POSTGRES_PASSWORD=
       - POSTGRES_DB=myapp
 
   cache:
-    image: redis:3.0-alpine
+    image: 'redis:3.0-alpine'
 
 ```
 
 ???
-* tool vs format
+What does a Compose file look like?
+
+Demo?
 ---
 
 ### Command-line Comparison
@@ -159,6 +164,8 @@ docker stack deploy \
 
 ]
 
+???
+What are the different between docker-compose and stack deploy?
 ---
 
 ### Compose File - Version Comparison
@@ -208,7 +215,7 @@ secrets:
 ]
 
 ???
-* uses Semantic Versioning
+What is new in the v3 config?
 
 ---
 
@@ -218,6 +225,8 @@ secrets:
 * **`docker-compose` docs** &mdash; [docs.docker.com/compose/overview](https://docs.docker.com/compose/overview/)
 * **`docker stack deploy` guide** &mdash; [docs.docker.com/engine/swarm/stack-deploy](https://docs.docker.com/engine/swarm/stack-deploy/)
 
+???
+Where to learn more?
 
 ---
 
@@ -229,6 +238,8 @@ class: center, middle
 
 Build an image from a Dockerfile
 
+???
+How familiar is everyone with Docker build?
 ---
 
 layout: true
@@ -267,7 +278,12 @@ $ docker image ls dnephin/go-dev
 dnephin/go-dev      latest              0d498f951e89
 
 ```
+???
+How does Docker build work?
 
+Demo?
+
+Why hasn't there been many changes to Docker build?
 ---
 
 ### New in 17.05 - Multi-stage Builds
@@ -295,6 +311,10 @@ Build and tag the intermediate stage
 $ docker build -t dnephin/myapp-builder --target builder .
 ```
 
+???
+What are other names for this feature?
+
+How do multi stage builds work?
 ---
 
 ### New in 17.05 - ARG in FROM
@@ -319,6 +339,10 @@ $ docker build --build-arg PY_VERSION=2.7 -t dnephin/myapp:py2.7 .
 
 ```
 
+???
+What is ARG in FROM new?
+
+How does it work?
 ---
 
 ### New in 17.05 - Dockerfile from stdin
@@ -346,6 +370,8 @@ Example 2: Build with a dockerfile outside of the context directory
 $ docker build -t dnephin/web -f - . &lt; ../../Dockerfile.common
 ```
 
+???
+What is Dockerfile from stdin useful?
 ---
 
 ### Proposals
@@ -360,6 +386,8 @@ $ docker build -t dnephin/web -f - . &lt; ../../Dockerfile.common
 * Getting started with build &mdash; [docs.docker.com/engine/getstarted/step_four/](https://docs.docker.com/engine/getstarted/step_four/)
 * Dockerfile reference &mdash; [docs.docker.com/engine/reference/builder/](https://docs.docker.com/engine/reference/builder/)
 
+???
+What's next for docker build?
 ---
 
 layout: false
@@ -372,6 +400,8 @@ A build automation tool for Docker applications
 
 [github.com/dnephin/dobi](https://github.com/dnephin/dobi)
 
+???
+What is dobi?
 ---
 
 layout: true
@@ -395,19 +425,22 @@ layout: true
 * run performance and load tests
 * ...
 
+???
+What is a project task?
+
+What other tools exist to do this?
+ - make, docker-compose run, shell scripts
+ - npm, tox, ant/maven
 ---
 
 ### Why?
 
-* create a tool for running project tasks that is optimal, and language agnostic
-* allow project tasks to be portable and repeatable
+* run project tasks optimally
+* portable and repeatable
+* language agnostic
 
-#### Result
-
-* supplement `docker build` to provide additional features
-* automation instead of (missing or incomplete) documentation
-* reduces barrier of entry to contribute to a project
-
+???
+Why dobi?
 ---
 
 .panel[
@@ -457,7 +490,16 @@ $ dobi builder:rm
 ```
 ]
 
+???
+How does dobi work?
+
 ---
+
+### Result 
+
+* supplement `docker build` to provide additional features
+* automation instead of (missing or incomplete) documentation
+* organized - all operations are driven from one tool
 
 ### Build Enhancements
 
@@ -466,6 +508,10 @@ $ dobi builder:rm
 * copy files from outside of the context into the build context
 * use artifacts of jobs or services in an image
 
+???
+What did I learn from building and using dobi?
+
+Demo?
 
 ---
 
@@ -475,6 +521,8 @@ $ dobi builder:rm
 * Examples &mdash; [dnephin.github.io/dobi/examples.html](https://dnephin.github.io/dobi/examples.html)
 * Source &mdash; [github.com/dnephin/dobi](https://github.com/dnephin/dobi)
 
+???
+Questions?
 ---
 
 class: center, middle
@@ -492,7 +540,7 @@ var slideshow = remark.create({
     click: false,
   },
   slideNumberFormat: '',
-  highlightStyle: 'solarized-light',
+  highlightStyle: 'atom-one-dark', //'solarized-light',
 });
     </script>
   </body>
