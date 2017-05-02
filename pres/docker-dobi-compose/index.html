@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Developing a Project with Docker</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css">
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+body { font-family: 'Droid Serif'; }
+h1, h2, h3 {
+  font-family: 'Yanone Kaffeesatz';
+  font-weight: normal;
+}
+h2, h3 {
+  margin: 0.5em 0;
+}
+.remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+a:visited {
+  color: #333;
+}
+a {
+  text-decoration: none;
+}
+
+.panel {
+  width: 47%;
+  float: left;
+}
+.panel:first-of-type {
+  margin-right: 1.5em;
+}
+
+.panel h4 {
+  text-align: center;
+}
+
+.narrow-panel {
+  width: 37%;
+  float: left;
+}
+.wide-panel {
+  width: 62%;
+  float: left;
+}
+
+#slide-me .wide-panel ul {
+  list-style: none;
+  font-size: 16px;
+}
+
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# Developing a Project with Docker 
+
+???
+What am I talking about?
+* recent updates to compose and build
+* introduction to dobi
+
+Please feel free to ask questions
+---
+name: me
+
+.panel[
+![dnephin github](img/github-me.png)
+]
+
+.panel[
+## About me
+]
+
+![github contributions](img/github-contrib.png)
+
+???
+Who am I ?
+* started 3 years
+* joined 2 years
+* focus on developer experience
+* opinions are my own
+---
+
+name: compose
+class: center, middle
+
+# Docker Compose
+
+Define and run multi-container applications with Docker
+
+![Compose logo](img/compose-logo.png)
+
+???
+How familiar is everyone with Compose?
+---
+
+layout: true
+
+## Docker Compose
+---
+
+[github.com/docker/compose](https://github.com/docker/compose)
+
+Command line tool and yaml configuration.
+```yaml
+version: '3.2'
+
+services:
+  web:
+    image: 'dnephin/webapp:latest'
+
+  database:
+    image: 'postgres:9.6-alpine'
+    environment:
+      - POSTGRES_PASSWORD=
+      - POSTGRES_DB=myapp
+
+  cache:
+    image: 'redis:3.0-alpine'
+
+```
+
+???
+What does a Compose file look like?
+
+Demo?
+---
+
+### Command-line Comparison
+
+.panel[
+
+#### docker-compose up   
+
+* supports Compose file v1, v2, v3
+* ignores `deploy` section in v3
+* focused on development and testing workflows
+* "service" concept is client-side
+* only supports multi-node when used with "swarm classic"
+
+```bash
+docker-compose up
+```
+
+]
+.panel[
+
+#### docker stack deploy
+
+* only supports Compose file v3 
+* focused on production deployments
+* added to Docker version 1.13 (January 2017)
+* uses "swarm mode" services, which support multi-node deployments
+
+```bash
+docker stack deploy \
+  -f docker-compose.yml \
+  STACKNAME
+```
+
+]
+
+???
+What are the different between docker-compose and stack deploy?
+---
+
+### Compose File - Version Comparison
+
+.panel[
+
+#### v2
+
+* first release February 2016
+* added support for configuring **volumes**, and **networks**
+* compatible with the **container** API 
+
+```yaml
+version: '2.1'
+services: ...
+
+volumes:
+  db-data:
+
+networks:
+  front: 
+```
+
+]
+
+.panel[
+
+#### v3
+
+* first release January 2017
+* added support for configuring **deploy** options, and **secrets**
+* compatible with **swarm mode services** API
+
+```yaml
+version: '3.2'
+services:
+  web:
+    image: dnephin/web:latest
+    deploy:
+      replicas: 10
+
+secrets:
+  auth-cert:
+    file: ./certs/auth.crt
+
+```
+]
+
+???
+What is new in the v3 config?
+
+---
+
+### Learn More
+
+* **Compose file reference** &mdash; [docs.docker.com/compose/compose-file](https://docs.docker.com/compose/compose-file)
+* **`docker-compose` docs** &mdash; [docs.docker.com/compose/overview](https://docs.docker.com/compose/overview/)
+* **`docker stack deploy` guide** &mdash; [docs.docker.com/engine/swarm/stack-deploy](https://docs.docker.com/engine/swarm/stack-deploy/)
+
+???
+Where to learn more?
+
+---
+
+layout: false 
+name: build
+class: center, middle
+
+# Docker Build
+
+Build an image from a Dockerfile
+
+???
+How familiar is everyone with Docker build?
+---
+
+layout: true
+
+## Docker Build
+
+---
+
+`Dockerfile`
+```dockerfile
+FROM    golang:1.7-alpine
+
+RUN     apk add -U git bash curl tree
+
+ARG     GLIDE=v0.12.3
+ARG     SRC=https://github.com/Masterminds/glide/releases/download/
+RUN     curl -sL ${SRC}/${GLIDE}/glide-${GLIDE}-linux-amd64.tar.gz | \
+        tar -xz linux-amd64/glide && \
+        mv linux-amd64/glide /usr/bin/glide && \
+        chmod +x /usr/bin/glide
+
+ENV     PS1="# "
+CMD     sh
+
+```
+
+`docker build`
+
+```bash
+$ docker build -t dnephin/go-dev -f Dockerfile .
+...
+Successfully built 0d498f951e89
+
+$ docker image ls dnephin/go-dev
+...
+dnephin/go-dev      latest              0d498f951e89
+
+```
+???
+How does Docker build work?
+
+Demo?
+
+Why hasn't there been many changes to Docker build?
+---
+
+### New in 17.05 - Multi-stage Builds
+
+```dockerfile
+FROM    dnephin/go-dev:latest AS builder
+WORKDIR /go/src/github.com/dnephin/myapp
+COPY    . .
+RUN     go build -o /go/bin/myapp .
+
+FROM    scratch
+COPY    --from=builder /go/bin/myapp /
+ENTRYPOINT ["/myapp"]
+
+```
+
+Build the minimal image
+
+```bash
+$ docker build -t dnephin/myapp .
+```
+
+Build and tag the intermediate stage
+```bash
+$ docker build -t dnephin/myapp-builder --target builder .
+```
+
+???
+What are other names for this feature?
+
+How do multi stage builds work?
+---
+
+### New in 17.05 - ARG in FROM
+
+```dockerfile
+ARG     PY_VERSION
+FROM    python:${PY_VERSION}-alpine
+
+RUN     apk add -U py-pip
+RUN     pip install virtualenv tox pytest
+
+CMD     python
+```
+
+Build with different versions of python
+
+```bash
+$ docker build --build-arg PY_VERSION=3.3 -t dnephin/myapp:py3.3 .
+...
+$ docker build --build-arg PY_VERSION=2.7 -t dnephin/myapp:py2.7 .
+...
+
+```
+
+???
+What is ARG in FROM new?
+
+How does it work?
+---
+
+### New in 17.05 - Dockerfile from stdin
+
+Example 1: Templated Dockerfile
+
+```handlebars
+FROM    {{platform_base}}
+COPY    install-{{platform}}.sh /tmp
+RUN     /tmp/install-{{platform}}.sh
+
+ENV     {{platform_envs}}
+CMD     /app/run
+```
+
+Render a template and build
+
+```bash
+$ ./render.sh | docker build -t dnephin/app -f - .
+```
+
+Example 2: Build with a dockerfile outside of the context directory
+
+```bash
+$ docker build -t dnephin/web -f - . &lt; ../../Dockerfile.common
+```
+
+???
+What is Dockerfile from stdin useful?
+---
+
+### Proposals
+
+* incremental build context sending
+* `IMPORT` and `EXPORT` to replace `ONBUILD`
+* `RUN --mount`
+* replace sequential build with a directed acyclic graph (DAG)
+
+### Learn More
+
+* Getting started with build &mdash; [docs.docker.com/engine/getstarted/step_four/](https://docs.docker.com/engine/getstarted/step_four/)
+* Dockerfile reference &mdash; [docs.docker.com/engine/reference/builder/](https://docs.docker.com/engine/reference/builder/)
+
+???
+What's next for docker build?
+---
+
+layout: false
+name: dobi
+class: center, middle
+
+# Dobi
+
+A build automation tool for Docker applications
+
+[github.com/dnephin/dobi](https://github.com/dnephin/dobi)
+
+???
+What is dobi?
+---
+
+layout: true
+## Dobi
+
+---
+
+### Project Tasks
+
+* run unit test
+* release a new version
+* compile a binary
+* update code dependencies
+* generate code
+* run static analysis and style validation
+* generate reference documentation
+* watch code for changes and run tests on change
+* start an interactive development environment
+* run integration tests
+* run end-to-end acceptance tests
+* run performance and load tests
+* ...
+
+???
+What is a project task?
+
+What other tools exist to do this?
+ - make, docker-compose run, shell scripts
+ - npm, tox, ant/maven
+---
+
+### Why?
+
+* run project tasks optimally
+* portable and repeatable
+* language agnostic
+
+???
+Why dobi?
+---
+
+.panel[
+dobi.yaml
+
+```yaml
+mount=source:
+  bind: .
+  path: /work
+
+image=builder:
+  image: demo-dev
+  context: dockerfiles/
+  steps: |
+    FROM    node:7.9-alpine
+    WORKDIR /work
+
+job=deps:
+  use: builder
+  mounts: [source]
+  command: "npm install"
+
+job=shell:
+  use: builder
+  mounts: [source]
+  interactive: true
+  command: sh
+```
+]
+
+.panel[
+
+Install dependencies
+
+```bash
+$ dobi deps
+```
+
+Start an interactive shell
+```bash
+$ dobi shell
+```
+
+Remove the builder image
+```bash
+$ dobi builder:rm
+```
+]
+
+???
+How does dobi work?
+
+---
+
+### Result 
+
+* supplement `docker build` to provide additional features
+* automation instead of (missing or incomplete) documentation
+* organized - all operations are driven from one tool
+
+### Build Enhancements
+
+* minimal images
+* better build caching by using modified time of files and images
+* copy files from outside of the context into the build context
+* use artifacts of jobs or services in an image
+
+???
+What did I learn from building and using dobi?
+
+Demo?
+
+---
+
+### Learn More
+
+* Documentation &mdash; [dnephin.github.io/dobi/](https://dnephin.github.io/dobi/)
+* Examples &mdash; [dnephin.github.io/dobi/examples.html](https://dnephin.github.io/dobi/examples.html)
+* Source &mdash; [github.com/dnephin/dobi](https://github.com/dnephin/dobi)
+
+???
+Questions?
+---
+
+class: center, middle
+layout: false
+
+# Thanks!
+    </textarea>
+    <script src="remark.min.js" type="text/javascript">
+    </script>
+    <script type="text/javascript">
+var slideshow = remark.create({
+  ratio: '4:3',
+  navigation: {
+    scroll: false,
+    click: false,
+  },
+  slideNumberFormat: '',
+  highlightStyle: 'atom-one-dark', //'solarized-light',
+});
+    </script>
+  </body>
+</html>

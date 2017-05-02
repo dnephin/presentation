@@ -1,4 +1,4 @@
 WAIT=1
 TIMEOUT=5
 
-/pres/docker-dobi-compose/
+/docker-dobi-compose/
